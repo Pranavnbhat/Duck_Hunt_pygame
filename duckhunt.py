@@ -31,69 +31,46 @@ class duck(pygame.sprite.Sprite):
         self.fallindex =0
         
         
-        self.flyright=[duckright1, duckright2, duckright3]                    #animation list 
-        self.flyrightimage=self.flyright[self.birdindex]
-        self.flyrightrect=self.flyrightimage.get_rect(mid bottom=(x,y))
+
         
-        self.flyleft=[duckleft1, duckleft2, duckleft3]
-        self.flyleftimage=self.flyleft[self.birdindex]
-        self.flyleft=self.flyrightimage.get_rect(mid bottom=(x,y))
-        
-        
-        #self.flyrdiagonalleft=[duckdiagonalleft1, duckdiagonalleft2, duckdiagonalleft3]
-        #self.flyrdiagonalleftimage=self.flyrdiagonalleft[self.birdindex]
-        #self.flyrdiagonalleft=self.flyrdiagonalleftimage.get_rect(mid bottom=(x,y))
-        
-        #self.flydiagonalright=[duckdiagonalright1, duckdiagonalright2, duckdiagonalright3]
-        #self.flydiagonalrightimage=self.flydiagonalright[self.birdindex]
-        #self.flydiagonalright=self.flydiagonalrightimage.get_rect(mid bottom=(x,y))
-        
-        #diagonals may not be reuired at the start this part might need a modification 
-        
-        
-        
-        self.fall=[duckfall1,duckfall2]
-        self.fallimage=self.fall[fallindex]
-        sefl.fallrect=self.fallimage.get_rect(midbottom =(x,y))              #x and y has to be coordinate of collision 
-        
-        
-        
-        
-    def collision(self):
-        collide=self.rect.colliderect(self.crosshairrect)
-        return collide
-        
-    def fallanim(self):
-        if self.collision():
-            self.rect
-            
-        
-            
-        
-#creating the crosshair
+#creating the crosshair sprite 
 class crosshair(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        crosshair1=pygame.load.image('assets/crosshair/crosshairs_white.png').convert.alpha()
-        crosshair2=pygame.load.image('assets/crosshair/crosshairs_red.png').convert.alpha()
-        self.firesound = pygame.mixer.Sound('assets/sounds/fire.mp3')
+        crosshair1=pygame.image.load('assets/crosshair/crosshairs_white.png').convert_alpha()
+        crosshair2=pygame.image.load('assets/crosshair/crosshairs_red.png').convert_alpha()
+        self.fire_sound = pygame.mixer.Sound('assets/sounds/fire.mp3')
         self.crosshairindex=0
         self.crosshairanim=[crosshair1,crosshair2]
         self.crosshairimage=self.crosshairanim[self.crosshairindex]
+    
         
     def firesound(self):
-        mouseclick=mouse.pygame.get_pressed()
-        if mouseclick==[0]:
-            sound.firesound.play()
+        mouseclick=pygame.mouse.get_pressed()
+        if mouseclick[0]==1:
+            self.fire_sound.play()
             
-    def display_crosshair(self):
+    def display_crosshair(self,birdrect):                                #when ever you call this function outside now remebe to call it as self.collision(birdrect)
         mousepos=pygame.mouse.get_pos()
-        self.crosshairrect=self.crosshairimage,get_rect(centre=mousepos)
+        self.crosshairrect = self.crosshairimage.get_rect(center=mousepos)
+        if self.collision(birdrect):
+            self.crosshairindex=1
+        else:
+            self.crosshairindex=0    
+        self.crosshairimage=self.crosshairanim[self.crosshairindex]
+        self.crosshairrect=self.crosshairimage.get_rect(center=mousepos)
+     
+    def collision(self,birdrect):
+        collide=self.crosshairrect.colliderect(birdrect)                #when ever you call this function outside now remebe to call it as self.collision(birdrect)
+        return collide
         
-    def update(self):
-        self.firesound()
-        self.display_crosshair()
+
             
+        
+    def update(self,birdrect):
+        self.firesound()
+        self.display_crosshair(birdrect)
+        self.collision(birdrect)
 
 
 pygame.init()
