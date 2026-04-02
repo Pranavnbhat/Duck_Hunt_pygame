@@ -39,7 +39,7 @@ class crosshair(pygame.sprite.Sprite):
         super().__init__()
         crosshair1=pygame.image.load('assets/crosshair/crosshairs_white.png').convert_alpha()
         crosshair2=pygame.image.load('assets/crosshair/crosshairs_red.png').convert_alpha()
-        self.fire_sound = pygame.mixer.Sound('assets/sounds/fire.mp3')
+        self.fire_sound = pygame.mixer.Sound('assets/sound/fire.mp3')
         self.crosshairindex=0
         self.crosshairanim=[crosshair1,crosshair2]
         self.crosshairimage=self.crosshairanim[self.crosshairindex]
@@ -77,7 +77,9 @@ pygame.init()
 screen = pygame.display.set_mode((800,600))
 pygame.display.set_caption('Duck Hunt')
 clock = pygame.time.Clock()
-test_font = pygame.font.Font('fonts/PressStart2P-Regular.ttf', 50)  
+font = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 50)  
+gameactive= False
+
 
 #groups 
 crosshairgroup = pygame.sprite.GroupSingle()
@@ -85,8 +87,73 @@ crosshairgroup.add(crosshair())
 
 
 #timer used for all animatios right now placeholder 
-animationtimer = pygame.USEREVENT + 1
-pygame.time.set_timer(animationtimer,1500)          
+#animationtimer = pygame.USEREVENT + 1
+#pygame.time.set_timer(animationtimer,1500)    
+
+while True:
+    
+    mousepos = pygame.mouse.get_pos()
+    for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			pygame.quit()
+			exit()
+    if gameactive=True:        
+	#add the game loop here 
+    pygame.mouse.set_visible(False)
+    
+    
+    else:
+        scree.fill((0,0,0))
+        font1 = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 72) 
+        titlescreen1=font1.render('DUCK', False, (0,255,255))
+        titlescreen1rect=titlescreen1.get_rect(topleft=(140, 80))
+        screen.blit(titlescreen1, titlescreen1rect)
+        
+        font2 = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 72) 
+        titlescreen2=font2.render('HUNT', False, (0,255,255))
+        titlescreen2rect=titlescreen2.get_rect(topleft=(200, 180))
+        screen.blit(titlescreen2, titlescreen2rect)
+        
+        font3 = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 24) 
+        titlescreen3rect = pygame.Rect(220, 300, 0, 0)  # temp rect for hover check
+        if titlescreen3rect.collidepoint(mouse_pos):
+            titlescreen3 = font3.render('Start', False, (255,255,255))  # highlight
+        else:
+            titlescreen3 = font3.render('Start', False, (248, 152, 0))
+        titlescreen3rect = titlescreen3.get_rect(topleft=(220,300))    
+        screen.blit(titlescreen3, titlescreen3rect)
+        
+        font4=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 24) 
+        titlescreen4rect = pygame.Rect(220, 350, 0, 0)
+        if titlescreen4rect.collidepoint(mouse_pos):
+            titlescreen4 = font4.render('Exit', False, (255,255,255))  
+        else:
+            titlescreen4 = font4.render('Exit', False, (248, 152, 0))
+        titlescreen4rect = titlescreen4.get_rect(topleft=(220,350))
+        screen.blit(titlescreen4, titlescreen4rect)
+        
+        font5=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
+        titlescreen5=font5.render('High Score', False, (0, 200, 0))
+        titlescreen5rect=titlescreen5.get_rect(topleft=(180, 470))
+        screen.blit(titlescreen5, titlescreen5rect)
+        
+        
+        
+        
+        
+       
+        
+        
+        
+        
+    
+    
+    crosshairgroup.draw(screen)
+    crosshairgroup.update(birdrect)
+    
+    
+    pygame.display.update()
+	clock.tick(60)    
             
             
         
