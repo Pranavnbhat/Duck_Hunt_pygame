@@ -48,14 +48,20 @@ class crosshair(pygame.sprite.Sprite):
         self.crosshairanim=[crosshair1,crosshair2]
         self.crosshairimage=self.crosshairanim[self.crosshairindex]
         
-        def firesound(self):
+    def firesound(self):
         mouseclick=mouse.pygame.get_pressed()
         if mouseclick==[0]:
             sound.firesound.play()
             
-        def display_crosshair(self):
-            mousepos=pygame.mouse.get_pos()
-            self.crosshairrect=self.crosshairimage,get_rect(centre=mousepos)
+    def display_crosshair(self):
+        mousepos=pygame.mouse.get_pos()
+        self.crosshairrect=self.crosshairimage,get_rect(centre=mousepos)
+        
+    def update(self):
+        self.firesound()
+        self.display_crosshair()
+            
+            
             
             
         
