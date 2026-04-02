@@ -28,14 +28,47 @@ class duck(pygame.sprite.Sprite):
         
         
         self.birdindex =0                                                               #controls the animation we'll need to change this depending on the speed and direction later on 
+        self.fallindex =0
+        
+        
         self.flyright=[duckright1, duckright2, duckright3]                    #animation list 
+        self.flyrightimage=self.flyright[self.birdindex]
+        self.flyrightrect=self.flyrightimage.get_rect(mid bottom=(x,y))
+        
         self.flyleft=[duckleft1, duckleft2, duckleft3]
-        self.flyrdiagonalleft=[duckdiagonalleft1, duckdiagonalleft2, duckdiagonalleft3]
-        self.flydiagonalright=[duckdiagonalright1, duckdiagonalright2, duckdiagonalright3]
+        self.flyleftimage=self.flyleft[self.birdindex]
+        self.flyleft=self.flyrightimage.get_rect(mid bottom=(x,y))
+        
+        
+        #self.flyrdiagonalleft=[duckdiagonalleft1, duckdiagonalleft2, duckdiagonalleft3]
+        #self.flyrdiagonalleftimage=self.flyrdiagonalleft[self.birdindex]
+        #self.flyrdiagonalleft=self.flyrdiagonalleftimage.get_rect(mid bottom=(x,y))
+        
+        #self.flydiagonalright=[duckdiagonalright1, duckdiagonalright2, duckdiagonalright3]
+        #self.flydiagonalrightimage=self.flydiagonalright[self.birdindex]
+        #self.flydiagonalright=self.flydiagonalrightimage.get_rect(mid bottom=(x,y))
+        
+        #diagonals may not be reuired at the start this part might need a modification 
+        
+        
+        
         self.fall=[duckfall1,duckfall2]
-        self.image=self.fly[self.index]
-        self.rect= self.image.get_rect(midbottom =(x,y))    #we'll keep it x and y until we decide how the spawn logic should work remeber to chane this
-        #create one fucntioin for left one for right one for diagonal left one for diagonl right add this later 
+        self.fallimage=self.fall[fallindex]
+        sefl.fallrect=self.fallimage.get_rect(midbottom =(x,y))              #x and y has to be coordinate of collision 
+        
+        
+        
+        
+    def collision(self):
+        collide=self.rect.colliderect(self.crosshairrect)
+        return collide
+        
+    def fallanim(self):
+        if self.collision():
+            self.rect
+            
+        
+            
         
 #creating the crosshair
 class crosshair(pygame.sprite.Sprite):
@@ -61,7 +94,22 @@ class crosshair(pygame.sprite.Sprite):
         self.firesound()
         self.display_crosshair()
             
-            
+
+
+pygame.init()
+screen = pygame.display.set_mode((800,600))
+pygame.display.set_caption('Duck Hunt')
+clock = pygame.time.Clock()
+test_font = pygame.font.Font('fonts/PressStart2P-Regular.ttf', 50)  
+
+#groups 
+crosshairgroup = pygame.sprite.GroupSingle()
+crosshairgroup.add(crosshair())
+
+
+#timer used for all animatios right now placeholder 
+animationtimer = pygame.USEREVENT + 1
+pygame.time.set_timer(animationtimer,1500)          
             
             
         
