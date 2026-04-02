@@ -138,6 +138,13 @@ while True:
         screen.blit(titlescreen5, titlescreen5rect)
         
         
+        if event.type == pygame.MOUSEBUTTONDOWN: and titlescreen3rect.collidepoint(mouse_pos):
+            gameactive=True
+        if event.type == pygame.MOUSEBUTTONDOWN: and titlescreen4rect.collidepoint(mouse_pos):
+            pygame.quit()
+			exit()
+        
+        
         
         
         
