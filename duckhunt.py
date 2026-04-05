@@ -21,7 +21,7 @@ class duck(pygame.sprite.Sprite):
         duckleft3= pygame.image.load('assets/duck/duckleft3.png').convert_alpha()
         
         duckright1= pygame.image.load('assets/duck/duckright1.png').convert_alpha()
-        duckright1= pygame.image.load('assets/duck/duckright2.png').convert_alpha()
+        duckright2= pygame.image.load('assets/duck/duckright2.png').convert_alpha()
         duckright3= pygame.image.load('assets/duck/duckright3.png').convert_alpha()
         
         duckfall1= pygame.image.load('assets/duck/fall1.png').convert_alpha()
@@ -48,7 +48,7 @@ class duck(pygame.sprite.Sprite):
         self.directionindex=0
      
    
-    def directiionindex(self):
+    def direction(self):
         if self.vx>0:
             self.directionindex=0                                                     #0 means its going right 
             
@@ -56,32 +56,37 @@ class duck(pygame.sprite.Sprite):
             self.directionindex=1                                                      #1 means its going left 
             
     def animation(self):
-        if directiionindex==0:
+        if self.directionindex==0:
             birdindex += 0.1
             if birdindex> len(self.right) :
                 birdindex =0 
             self.image=self.right[int(birdindex)]
         else:
-            if directiionindex==0:
+            if self.directionindex==1:
             birdindex += 0.1
             if birdindex> len(self.left) :
                 birdindex =0 
             self.image=self.left[int(birdindex)]
             
-        def duckmove(self):
-            if self.directionindex==0:
-                self.rectx +=1 and self.recty +=1
-                if self.rect.right >= 800 or self.rect.left <= 0:
-                    self.vx *= -1
-                elif self.rect.top >= 0 or self.bottom >= 600:
-                    self.vy *= -1
-                    
+    def duckmove(self):
+        if self.directionindex==0:
+            self.rect.x +=self.vx and self.rect.y +=self.vy
+            if self.rect.right >= 800 or self.rect.left <= 0:
+                self.vx *= -1
+            elif self.rect.top >= 0 or self.rect.bottom >= 600:
+                self.vy *= -1
                 
-            
-            
-                
-            
-        
+        elif self.directionindex==1:
+            self.rect.x -=self.vx  and self.rect.y +=self.vy
+            if self.rect.left <=0 or self.rect.right >=800: 
+                self.vx *= -1
+            elif self.rect.top >= 0 or self.rect.bottom >= 600:
+                self.vy *= -1    
+
+    def update(self):
+        self.directionindex()
+        self.animation()
+        self.duckmove()
  
 #creating the crosshair sprite 
 class crosshair(pygame.sprite.Sprite):
@@ -116,8 +121,6 @@ class crosshair(pygame.sprite.Sprite):
         return collide                                         
         
 
-            
-        
     def update(self,birdrect):
         self.firesound()
         self.display_crosshair(birdrect)
@@ -131,6 +134,8 @@ clock = pygame.time.Clock()
 font = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 50)  
 gameactive= False
 pygame.mouse.set_visible(False)
+
+
 
 #font for main menu 
 font1 = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 72) 
@@ -167,10 +172,41 @@ while True:
             duckgroup.update()
             crosshairgroup.draw(screen)
             crosshairgroup.update()
-    #add the game loop here 
-    
-    
-    
+            
+            screen.fill((66, 192, 255))
+            
+            tree=pygame.image.load('assets/bg/tree.png')
+            treerect=tree.get_rect(midbottom=(60, 410))
+            
+            bush = pygame.image.load('assets/bg/bush.png')
+            bushrect = bush.get_rect(midbottom=(717, 537))
+
+            grass1 = pygame.image.load('assets/bg/grass.png')
+            grass1rect = grass1.get_rect(topleft=(0, 504))
+
+            grass2rect = grass1.get_rect(topleft=(256, 504))
+            grass3rect = grass1.get_rect(topleft=(512, 504))
+            grass4rect = grass1.get_rect(topleft=(768, 504))
+
+            cloud2 = pygame.image.load('assets/bg/cloud2.png')
+            cloud2rect = cloud2.get_rect(topleft=(80, 40))
+
+            cloud3 = pygame.image.load('assets/bg/cloud3.png')
+            cloud3rect = cloud3.get_rect(topleft=(480, 25))
+
+            cloud1 = pygame.image.load('assets/bg/cloud1.png')
+            cloud1rect = cloud1.get_rect(topleft=(660, 60))
+            
+            screen.fill((66, 192, 255))
+            screen.blit(tree, treerect)
+            screen.blit(bush, bushrect)
+            screen.blit(grass1, grass1rect)
+            screen.blit(grass1, grass2rect)
+            screen.blit(grass1, grass3rect)
+            screen.blit(grass1, grass4rect)
+            screen.blit(cloud2, cloud2rect)
+            screen.blit(cloud3, cloud3rect)
+            screen.blit(cloud1, cloud1rect)
     else:
         screen.fill((0,0,0))
         
@@ -213,10 +249,7 @@ while True:
             pygame.quit()
             exit()
         
-       
-        
-        
-        
+  
 
     crosshairgroup.draw(screen)
     crosshairgroup.update(birdrect)                 
@@ -224,6 +257,14 @@ while True:
     
     pygame.display.update()
     clock.tick(60)    
-            
-            
-        
+ 
+
+# Credits
+# - Duck, dog and background sprites by Pik (spriters-resource.com)
+# - Crosshair by Kenney (kenney.nl)
+# - Sound effects from freesound.org
+# - Press Start 2P font by Cody Boisclair (zone38.net), 
+  # licensed under SIL Open Font License 1.1 (openfontlicense.org)
+# - Inspired by Duck Hunt Remastered by [his GitHub username]
+# - Original Duck Hunt game by Nintendo. 
+  # This is a fan project with no commercial intent.        
