@@ -54,13 +54,13 @@ class duck(pygame.sprite.Sprite):
             birdindex += 0.1
             if birdindex> len(self.right) :
                 birdindex =0 
-            self.rightanimation=self.right[int(birdindex)]
+            self.image=self.right[int(birdindex)]
         else:
             if directiionindex==0:
             birdindex += 0.1
             if birdindex> len(self.left) :
                 birdindex =0 
-            self.lefttanimation=self.left[int(birdindex)]
+            self.image=self.left[int(birdindex)]
             
                 
             
@@ -102,7 +102,7 @@ class crosshair(pygame.sprite.Sprite):
      
     def collision(self,birdrect):
         collide=self.rect.colliderect(birdrect)                #when ever you call this function outside now remebe to call it as self.collision(birdrect)
-        return collide
+        return collide                                         
         
 
             
@@ -130,12 +130,16 @@ font5=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
 
 #groups
 crosshairgroup = pygame.sprite.GroupSingle()
-crosshairgroup.add(crosshair(birdrect))                          
+crosshairgroup.add(crosshair(birdrect))     
+
+duckgroup= pygame.sprite.GroupSingle()
+duckgroup.add(duck())
+  
 
 
 #timer used for all animatios right now placeholder 
-#animationtimer = pygame.USEREVENT + 1
-#pygame.time.set_timer(animationtimer,1500)    
+#timer = pygame.USEREVENT + 1
+#pygame.time.set_timer(timer,1500)    
 
 while True:
     
@@ -145,7 +149,13 @@ while True:
             pygame.quit()
             exit()
     if gameactive==True: 
-        pass                           #pass is temporary for now 
+        if len(duckgroup)==0 and timer >=x:                #x here will be the time dog takes to finish its animation after the duck hits the floor 
+            duckgroup.add(duck)
+        else:
+            duckgroup.draw(screen)
+            duckgroup.update()
+            crosshairgroup.draw(screen)
+            crosshairgroup.update()
     #add the game loop here 
     
     
