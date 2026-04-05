@@ -26,9 +26,14 @@ class duck(pygame.sprite.Sprite):
         
         duckfall1= pygame.image.load('assets/duck/fall1.png').convert_alpha()
         duckfall2= pygame.image.load('assets/duck/fall2.png').convert_alpha()
+        duckfall3= pygame.image.load('assets/duck/fall3.png').convert_alpha()
+        duckfall4= pygame.image.load('assets/duck/fall4.png').convert_alpha()
+        
+        duckdead= pygame.image.load('assets/duck/dead.png').convert_alpha()
         
         self.left= [duckleft1,duckleft2,duckleft3]
         self.right=[duckright1,duckright2,duckright3]
+        
         
 
         self.vx = choice([-6, -5, -4, -3, 3, 4, 5, 6])
