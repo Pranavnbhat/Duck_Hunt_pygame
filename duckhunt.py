@@ -39,7 +39,7 @@ class duck(pygame.sprite.Sprite):
         self.vx = choice([-6, -5, -4, -3, 3, 4, 5, 6])
         self.vy = choice([-6, -5, -4, -3, 3, 4, 5, 6]) 
         
-        
+        self.image = self.right[0]
         self.rect = self.image.get_rect(midbottom=(randint(100, 700), 300))
         
         
@@ -57,34 +57,34 @@ class duck(pygame.sprite.Sprite):
             
     def animation(self):
         if self.directionindex==0:
-            birdindex += 0.1
-            if birdindex> len(self.right) :
-                birdindex =0 
-            self.image=self.right[int(birdindex)]
-        else:
-            if self.directionindex==1:
-            birdindex += 0.1
-            if birdindex> len(self.left) :
-                birdindex =0 
-            self.image=self.left[int(birdindex)]
+            self.birdindex += 0.1
+            if self.birdindex> len(self.right) :
+                self.birdindex =0 
+            self.image=self.right[int(self.birdindex)]
+        
+        elif self.directionindex==1:
+            self.birdindex += 0.1
+            if self.birdindex> len(self.left) :
+                self.birdindex =0 
+            self.image=self.left[int(self.birdindex)]
             
     def duckmove(self):
         if self.directionindex==0:
             self.rect.x +=self.vx and self.rect.y +=self.vy
             if self.rect.right >= 800 or self.rect.left <= 0:
                 self.vx *= -1
-            elif self.rect.top >= 0 or self.rect.bottom >= 600:
+            elif self.rect.top <= 0 or self.rect.bottom >= 600:
                 self.vy *= -1
                 
         elif self.directionindex==1:
             self.rect.x -=self.vx  and self.rect.y +=self.vy
             if self.rect.left <=0 or self.rect.right >=800: 
                 self.vx *= -1
-            elif self.rect.top >= 0 or self.rect.bottom >= 600:
+            elif self.rect.top <= 0 or self.rect.bottom >= 600:
                 self.vy *= -1    
 
     def update(self):
-        self.directionindex()
+        self.direction()
         self.animation()
         self.duckmove()
  
@@ -106,25 +106,25 @@ class crosshair(pygame.sprite.Sprite):
         if mouseclick[0]==1:
             self.fire_sound.play()
             
-    def display_crosshair(self,birdrect):                                #when ever you call this function outside now remebe to call it as self.collision(birdrect)
+    def display_crosshair(self,duckgroup.sprite.rect):                                #when ever you call this function outside now remebe to call it as   self.collision(duck.rect) not self.collision(duckgroup.sprite.rect) remember to use this everywhere 
         mousepos=pygame.mouse.get_pos()
         self.rect = self.image.get_rect(center=mousepos)
-        if self.collision(birdrect):
+        if self.collision(duckgroup.sprite.rect):
             self.crosshairindex=1
         else:
             self.crosshairindex=0    
         self.image=self.crosshairanim[self.crosshairindex]
         self.rect=self.image.get_rect(center=mousepos)
      
-    def collision(self,birdrect):
-        collide=self.rect.colliderect(birdrect)                #when ever you call this function outside now remebe to call it as self.collision(birdrect)
+    def collision(self,duckgroup.sprite.rect):
+        collide=self.rect.colliderect(duckgroup.sprite.rect)                #when ever you call this function outside now remebe to call it as self.collision(duckgroup.sprite.rect)
         return collide                                         
         
 
-    def update(self,birdrect):
+    def update(self,duckgroup.sprite.rect):
         self.firesound()
-        self.display_crosshair(birdrect)
-        self.collision(birdrect)
+        self.display_crosshair(duckgroup.sprite.rect)
+        self.collision(duckgroup.sprite.rect)
 
 
 pygame.init()
@@ -146,10 +146,37 @@ font5=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
 
 #groups
 crosshairgroup = pygame.sprite.GroupSingle()
-crosshairgroup.add(crosshair(birdrect))     
+crosshairgroup.add(crosshair(duckgroup.sprite.rect))     
 
 duckgroup= pygame.sprite.GroupSingle()
 duckgroup.add(duck())
+
+
+screen.fill((66, 192, 255))
+            
+tree=pygame.image.load('assets/bg/tree.png')
+treerect=tree.get_rect(midbottom=(60, 410))
+            
+bush = pygame.image.load('assets/bg/bush.png')
+bushrect = bush.get_rect(midbottom=(717, 537))
+
+grass1 = pygame.image.load('assets/bg/grass.png')
+grass1rect = grass1.get_rect(topleft=(0, 504))
+
+grass2rect = grass1.get_rect(topleft=(256, 504))
+grass3rect = grass1.get_rect(topleft=(512, 504))
+grass4rect = grass1.get_rect(topleft=(768, 504))
+
+cloud2 = pygame.image.load('assets/bg/cloud2.png')
+cloud2rect = cloud2.get_rect(topleft=(80, 40))
+
+cloud3 = pygame.image.load('assets/bg/cloud3.png')
+cloud3rect = cloud3.get_rect(topleft=(480, 25))
+
+cloud1 = pygame.image.load('assets/bg/cloud1.png')
+cloud1rect = cloud1.get_rect(topleft=(660, 60))
+            
+            
   
 
 
@@ -158,6 +185,16 @@ duckgroup.add(duck())
 #pygame.time.set_timer(timer,1500)    
 
 while True:
+    screen.fill((66, 192, 255))
+    screen.blit(tree, treerect)
+    screen.blit(bush, bushrect)
+    screen.blit(grass1, grass1rect)
+    screen.blit(grass1, grass2rect)
+    screen.blit(grass1, grass3rect)
+    screen.blit(grass1, grass4rect)
+    screen.blit(cloud2, cloud2rect)
+    screen.blit(cloud3, cloud3rect)
+    screen.blit(cloud1, cloud1rect)
     
     mousepos = pygame.mouse.get_pos()
     for event in pygame.event.get():
@@ -166,47 +203,14 @@ while True:
             exit()
     if gameactive==True: 
         if len(duckgroup)==0 and timer >=x:                #x here will be the time dog takes to finish its animation after the duck hits the floor 
-            duckgroup.add(duck)
+            duckgroup.add(duck())
         else:
             duckgroup.draw(screen)
             duckgroup.update()
             crosshairgroup.draw(screen)
             crosshairgroup.update()
             
-            screen.fill((66, 192, 255))
             
-            tree=pygame.image.load('assets/bg/tree.png')
-            treerect=tree.get_rect(midbottom=(60, 410))
-            
-            bush = pygame.image.load('assets/bg/bush.png')
-            bushrect = bush.get_rect(midbottom=(717, 537))
-
-            grass1 = pygame.image.load('assets/bg/grass.png')
-            grass1rect = grass1.get_rect(topleft=(0, 504))
-
-            grass2rect = grass1.get_rect(topleft=(256, 504))
-            grass3rect = grass1.get_rect(topleft=(512, 504))
-            grass4rect = grass1.get_rect(topleft=(768, 504))
-
-            cloud2 = pygame.image.load('assets/bg/cloud2.png')
-            cloud2rect = cloud2.get_rect(topleft=(80, 40))
-
-            cloud3 = pygame.image.load('assets/bg/cloud3.png')
-            cloud3rect = cloud3.get_rect(topleft=(480, 25))
-
-            cloud1 = pygame.image.load('assets/bg/cloud1.png')
-            cloud1rect = cloud1.get_rect(topleft=(660, 60))
-            
-            screen.fill((66, 192, 255))
-            screen.blit(tree, treerect)
-            screen.blit(bush, bushrect)
-            screen.blit(grass1, grass1rect)
-            screen.blit(grass1, grass2rect)
-            screen.blit(grass1, grass3rect)
-            screen.blit(grass1, grass4rect)
-            screen.blit(cloud2, cloud2rect)
-            screen.blit(cloud3, cloud3rect)
-            screen.blit(cloud1, cloud1rect)
     else:
         screen.fill((0,0,0))
         
@@ -252,7 +256,7 @@ while True:
   
 
     crosshairgroup.draw(screen)
-    crosshairgroup.update(birdrect)                 
+    crosshairgroup.update(duckgroup.sprite.rect)                 
     
     
     pygame.display.update()
