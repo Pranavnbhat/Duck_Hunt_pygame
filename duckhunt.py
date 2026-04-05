@@ -70,14 +70,16 @@ class duck(pygame.sprite.Sprite):
             
     def duckmove(self):
         if self.directionindex==0:
-            self.rect.x +=self.vx and self.rect.y +=self.vy
+            self.rect.x +=self.vx 
+            self.rect.y +=self.vy
             if self.rect.right >= 800 or self.rect.left <= 0:
                 self.vx *= -1
             elif self.rect.top <= 0 or self.rect.bottom >= 600:
                 self.vy *= -1
                 
         elif self.directionindex==1:
-            self.rect.x -=self.vx  and self.rect.y +=self.vy
+            self.rect.x -=self.vx   
+            self.rect.y +=self.vy
             if self.rect.left <=0 or self.rect.right >=800: 
                 self.vx *= -1
             elif self.rect.top <= 0 or self.rect.bottom >= 600:
@@ -106,25 +108,25 @@ class crosshair(pygame.sprite.Sprite):
         if mouseclick[0]==1:
             self.fire_sound.play()
             
-    def display_crosshair(self,duckgroup.sprite.rect):                                #when ever you call this function outside now remebe to call it as   self.collision(duck.rect) not self.collision(duckgroup.sprite.rect) remember to use this everywhere 
+    def display_crosshair(self,birdrect):                                #when ever you call this function outside now remebe to call it as   self.collision(duck.rect) not self.collision(duckgroup.sprite.rect) remember to use this everywhere 
         mousepos=pygame.mouse.get_pos()
         self.rect = self.image.get_rect(center=mousepos)
-        if self.collision(duckgroup.sprite.rect):
+        if self.collision(birdrect):
             self.crosshairindex=1
         else:
             self.crosshairindex=0    
         self.image=self.crosshairanim[self.crosshairindex]
         self.rect=self.image.get_rect(center=mousepos)
      
-    def collision(self,duckgroup.sprite.rect):
-        collide=self.rect.colliderect(duckgroup.sprite.rect)                #when ever you call this function outside now remebe to call it as self.collision(duckgroup.sprite.rect)
+    def collision(self,birdrect):
+        collide=self.rect.colliderect(birdrect)                #when ever you call this function outside now remebe to call it as self.collision(duckgroup.sprite.rect)
         return collide                                         
         
 
-    def update(self,duckgroup.sprite.rect):
+    def update(self,birdrect):
         self.firesound()
-        self.display_crosshair(duckgroup.sprite.rect)
-        self.collision(duckgroup.sprite.rect)
+        self.display_crosshair(birdrect)
+        self.collision(birdrect)
 
 
 pygame.init()
@@ -145,11 +147,13 @@ font4=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 24)
 font5=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
 
 #groups
-crosshairgroup = pygame.sprite.GroupSingle()
-crosshairgroup.add(crosshair(duckgroup.sprite.rect))     
-
 duckgroup= pygame.sprite.GroupSingle()
 duckgroup.add(duck())
+
+crosshairgroup = pygame.sprite.GroupSingle()
+crosshairgroup.add(crosshair())     
+
+
 
 
 screen.fill((66, 192, 255))
@@ -255,8 +259,13 @@ while True:
         
   
 
+    duckgroup.draw(screen)
+    duckgroup.update()
+
     crosshairgroup.draw(screen)
     crosshairgroup.update(duckgroup.sprite.rect)                 
+    
+    
     
     
     pygame.display.update()
