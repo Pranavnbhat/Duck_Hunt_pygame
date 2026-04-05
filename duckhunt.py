@@ -30,12 +30,12 @@ class duck(pygame.sprite.Sprite):
         self.left= [duckleft1,duckleft2,duckleft3]
         self.right=[duckright1,duckright2,duckright3]
         
-        self.rightanimation=self.right[birdindex]
-        self.leftanimation=self.left[birdindex]
-        
-        
+
         self.vx = choice([-6, -5, -4, -3, 3, 4, 5, 6])
         self.vy = choice([-6, -5, -4, -3, 3, 4, 5, 6]) 
+        
+        
+        self.rect = self.image.get_rect(midbottom=(randint(100, 700), 300))
         
         
         self.birdindex =0                                                               #controls the animation we'll need to change this depending on the speed and direction later on 
@@ -44,8 +44,9 @@ class duck(pygame.sprite.Sprite):
      
    
     def directiionindex(self):
-        if vx>0:
+        if self.vx>0:
             self.directionindex=0                                                     #0 means its going right 
+            
         else:
             self.directionindex=1                                                      #1 means its going left 
             
@@ -62,16 +63,21 @@ class duck(pygame.sprite.Sprite):
                 birdindex =0 
             self.image=self.left[int(birdindex)]
             
+        def duckmove(self):
+            if self.directionindex==0:
+                self.rectx +=1 and self.recty +=1
+                if self.rect.right >= 800 or self.rect.left <= 0:
+                    self.vx *= -1
+                elif self.rect.top >= 0 or self.bottom >= 600:
+                    self.vy *= -1
+                    
+                
+            
+            
                 
             
         
-    
-        
-            
-        
-        
-
-        
+ 
 #creating the crosshair sprite 
 class crosshair(pygame.sprite.Sprite):
     def __init__(self):
@@ -206,14 +212,7 @@ while True:
         
         
         
-        
-       
-        
-        
-        
-        
-    
-    
+
     crosshairgroup.draw(screen)
     crosshairgroup.update(birdrect)                 
     
