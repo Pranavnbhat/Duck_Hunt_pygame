@@ -212,7 +212,9 @@ while True:
             duckgroup.draw(screen)
             duckgroup.update()
             crosshairgroup.draw(screen)
-            crosshairgroup.update()
+            crosshairgroup.update(duckgroup.sprite.rect) 
+        duckgroup.draw(screen)
+        duckgroup.update()    
             
             
     else:
@@ -228,21 +230,17 @@ while True:
         screen.blit(titlescreen2, titlescreen2rect)
         
         
-        titlescreen3rect = pygame.Rect(220, 300, 0, 0)  # temp rect for hover check
+        titlescreen3 = font3.render('Start', False, (248, 152, 0))
+        titlescreen3rect = titlescreen3.get_rect(topleft=(220, 300))
         if titlescreen3rect.collidepoint(mousepos):
-            titlescreen3 = font3.render('Start', False, (255,255,255))  # highlight
-        else:
-            titlescreen3 = font3.render('Start', False, (248, 152, 0))
-        titlescreen3rect = titlescreen3.get_rect(topleft=(220,300))    
+            titlescreen3 = font3.render('Start', False, (255, 255, 255))
         screen.blit(titlescreen3, titlescreen3rect)
-        
-        
-        titlescreen4rect = pygame.Rect(220, 350, 0, 0)
+
+
+        titlescreen4 = font4.render('Exit', False, (248, 152, 0))
+        titlescreen4rect = titlescreen4.get_rect(topleft=(220, 350))
         if titlescreen4rect.collidepoint(mousepos):
-            titlescreen4 = font4.render('Exit', False, (255,255,255))  
-        else:
-            titlescreen4 = font4.render('Exit', False, (248, 152, 0))
-        titlescreen4rect = titlescreen4.get_rect(topleft=(220,350))
+            titlescreen4 = font4.render('Exit', False, (255, 255, 255))
         screen.blit(titlescreen4, titlescreen4rect)
         
         
@@ -254,13 +252,14 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen3rect.collidepoint(mousepos):
             gameactive=True
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen4rect.collidepoint(mousepos):
+            
+            crosshairgroup.update()
             pygame.quit()
             exit()
         
   
 
-    duckgroup.draw(screen)
-    duckgroup.update()
+    
 
     crosshairgroup.draw(screen)
     crosshairgroup.update(duckgroup.sprite.rect)                 
@@ -272,12 +271,4 @@ while True:
     clock.tick(60)    
  
 
-# Credits
-# - Duck, dog and background sprites by Pik (spriters-resource.com)
-# - Crosshair by Kenney (kenney.nl)
-# - Sound effects from freesound.org
-# - Press Start 2P font by Cody Boisclair (zone38.net), 
-  # licensed under SIL Open Font License 1.1 (openfontlicense.org)
-# - Inspired by Duck Hunt Remastered by [his GitHub username]
-# - Original Duck Hunt game by Nintendo. 
-  # This is a fan project with no commercial intent.        
+       
