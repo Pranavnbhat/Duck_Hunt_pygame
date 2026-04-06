@@ -72,17 +72,17 @@ class duck(pygame.sprite.Sprite):
         if self.directionindex==0:
             self.rect.x +=self.vx 
             self.rect.y +=self.vy
-            if self.rect.right >= 800 or self.rect.left <= 0:
+            if self.rect.right >= 1024 or self.rect.left <= 0:
                 self.vx *= -1
-            elif self.rect.top <= 0 or self.rect.bottom >= 600:
+            elif self.rect.top <= 0 or self.rect.bottom >= 960:
                 self.vy *= -1
                 
         elif self.directionindex==1:
             self.rect.x +=self.vx   
             self.rect.y +=self.vy
-            if self.rect.left <=0 or self.rect.right >=800: 
+            if self.rect.left <=0 or self.rect.right >=1024: 
                 self.vx *= -1
-            elif self.rect.top <= 0 or self.rect.bottom >= 600:
+            elif self.rect.top <= 0 or self.rect.bottom >= 960:
                 self.vy *= -1    
 
     def update(self):
@@ -140,7 +140,7 @@ class crosshair(pygame.sprite.Sprite):
 
 
 pygame.init()
-screen = pygame.display.set_mode((800,600))
+screen = pygame.display.set_mode((1024,960))
 pygame.display.set_caption('Duck Hunt')
 clock = pygame.time.Clock()
 font = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 50)  
@@ -170,17 +170,14 @@ pygame.time.set_timer(crosshairgroup.sprite.reloadtime, 500, 1)
 screen.fill((66, 192, 255))
             
 tree=pygame.image.load('assets/bg/tree.png')
-treerect=tree.get_rect(midbottom=(60, 515))
+treerect=tree.get_rect(midbottom=(121, 963))
             
-bush = pygame.image.load('assets/bg/bush.png')
-bushrect = bush.get_rect(midbottom=(717, 537))
 
-grass1 = pygame.image.load('assets/bg/grass.png')
-grass1rect = grass1.get_rect(topleft=(0, 504))
 
-grass2rect = grass1.get_rect(topleft=(256, 504))
-grass3rect = grass1.get_rect(topleft=(512, 504))
-grass4rect = grass1.get_rect(topleft=(768, 504))
+grass = pygame.image.load('assets/bg/grass.png')
+grassrect = grass.get_rect(bottomleft=(0, 1316))       #it's 1316 casue the image has some extra transparent parts so i had to find this manually 
+
+
 
 cloud2 = pygame.image.load('assets/bg/cloud2.png')
 cloud2rect = cloud2.get_rect(topleft=(80, 40))
@@ -222,11 +219,9 @@ while True:
         crosshairgroup.update(duckgroup.sprite.rect,event) 
             
         screen.blit(tree, treerect)
-        screen.blit(bush, bushrect)
-        screen.blit(grass1, grass1rect)
-        screen.blit(grass1, grass2rect)
-        screen.blit(grass1, grass3rect)
-        screen.blit(grass1, grass4rect)
+        
+        screen.blit(grass, grassrect)
+        
            
             
     else:
