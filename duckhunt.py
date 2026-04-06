@@ -170,7 +170,7 @@ pygame.time.set_timer(crosshairgroup.sprite.reloadtime, 500, 1)
 screen.fill((66, 192, 255))
             
 tree=pygame.image.load('assets/bg/tree.png')
-treerect=tree.get_rect(midbottom=(60, 410))
+treerect=tree.get_rect(midbottom=(60, 515))
             
 bush = pygame.image.load('assets/bg/bush.png')
 bushrect = bush.get_rect(midbottom=(717, 537))
@@ -201,15 +201,10 @@ cloud1rect = cloud1.get_rect(topleft=(660, 60))
 
 while True:
     screen.fill((66, 192, 255))
-    screen.blit(tree, treerect)
-    screen.blit(bush, bushrect)
-    screen.blit(grass1, grass1rect)
-    screen.blit(grass1, grass2rect)
-    screen.blit(grass1, grass3rect)
-    screen.blit(grass1, grass4rect)
     screen.blit(cloud2, cloud2rect)
     screen.blit(cloud3, cloud3rect)
-    screen.blit(cloud1, cloud1rect)
+    screen.blit(cloud1, cloud1rect) 
+    
     
     
     mousepos = pygame.mouse.get_pos()
@@ -226,7 +221,13 @@ while True:
         crosshairgroup.draw(screen)
         crosshairgroup.update(duckgroup.sprite.rect,event) 
             
-            
+        screen.blit(tree, treerect)
+        screen.blit(bush, bushrect)
+        screen.blit(grass1, grass1rect)
+        screen.blit(grass1, grass2rect)
+        screen.blit(grass1, grass3rect)
+        screen.blit(grass1, grass4rect)
+           
             
     else:
         screen.fill((0,0,0))
@@ -268,7 +269,8 @@ while True:
           
         
   
-
+    
+    
     pygame.display.update()
     clock.tick(60)    
  
