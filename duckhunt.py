@@ -97,16 +97,25 @@ class crosshair(pygame.sprite.Sprite):
         crosshair1=pygame.image.load('assets/crosshair/crosshairs_white.png').convert_alpha()
         crosshair2=pygame.image.load('assets/crosshair/crosshairs_red.png').convert_alpha()
         self.fire_sound = pygame.mixer.Sound('assets/sound/fire.mp3')
+        self.relaod_sound=pygame.mixer.Sound('assets/sound/reload.mp3')
         self.crosshairindex=0
         self.crosshairanim=[crosshair1,crosshair2]
         self.image=self.crosshairanim[self.crosshairindex]
         self.rect = self.image.get_rect()
-    
+        self.reload = True
+        self.reloadtime = pygame.USEREVENT + 1
         
-    def firesound(self):
-        mouseclick=pygame.mouse.get_pressed()
-        if mouseclick[0]==1:
-            self.fire_sound.play()
+    def firesound(self,event,reloadtime):
+        if self.reload ==True and event.type==self.reloadtime:
+            self.relaod_sound.play()
+            self.reload= False
+            
+        elif self.reload==False:
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.fire_sound.play()
+                self.reload=True   
+                pygame.time.set_timer(reloadtime, 500, 1)
             
     def display_crosshair(self,birdrect):                                #when ever you call this function outside now remebe to call it as   self.collision(duck.rect) not self.collision(duckgroup.sprite.rect) remember to use this everywhere 
         mousepos=pygame.mouse.get_pos()
@@ -123,8 +132,8 @@ class crosshair(pygame.sprite.Sprite):
         return collide                                         
         
 
-    def update(self,birdrect):
-        self.firesound()
+    def update(self,birdrect,event,reloadtime):
+        self.firesound(event)
         self.display_crosshair(birdrect)
         self.collision(birdrect)
 
@@ -135,7 +144,7 @@ pygame.display.set_caption('Duck Hunt')
 clock = pygame.time.Clock()
 font = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 50)  
 gameactive= False
-pygame.mouse.set_visible(False)
+
 
 
 
@@ -186,7 +195,9 @@ cloud1rect = cloud1.get_rect(topleft=(660, 60))
 
 #timer used for all animatios right now placeholder 
 #timer = pygame.USEREVENT + 1
-#pygame.time.set_timer(timer,1500)    
+#pygame.time.set_timer(timer,1500) 
+
+
 
 while True:
     screen.fill((66, 192, 255))
@@ -200,21 +211,22 @@ while True:
     screen.blit(cloud3, cloud3rect)
     screen.blit(cloud1, cloud1rect)
     
+    
     mousepos = pygame.mouse.get_pos()
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             pygame.quit()
             exit()
-    if gameactive==True: 
+    if gameactive==True:
+        pygame.mouse.set_visible(False)
         if len(duckgroup)==0 and timer >=x:                #x here will be the time dog takes to finish its animation after the duck hits the floor 
             duckgroup.add(duck())
         else:
             duckgroup.draw(screen)
             duckgroup.update()
             crosshairgroup.draw(screen)
-            crosshairgroup.update(duckgroup.sprite.rect) 
-        duckgroup.draw(screen)
-        duckgroup.update()    
+            crosshairgroup.update(duckgroup.sprite.rect,event) 
+            
             
             
     else:
@@ -252,17 +264,15 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen3rect.collidepoint(mousepos):
             gameactive=True
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen4rect.collidepoint(mousepos):
-            
-            crosshairgroup.update()
             pygame.quit()
             exit()
+          
         
   
 
     
 
-    crosshairgroup.draw(screen)
-    crosshairgroup.update(duckgroup.sprite.rect)                 
+                         
     
     
     
