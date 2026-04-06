@@ -36,11 +36,11 @@ class duck(pygame.sprite.Sprite):
         
         
 
-        self.vx = choice([-6, -5, -4, -3, 3, 4, 5, 6])
-        self.vy = choice([-6, -5, -4, -3, 3, 4, 5, 6]) 
+        self.vx = choice([ -4, -3, 3, 4])
+        self.vy = choice([ -4, -3, 3, 4]) 
         
         self.image = self.right[0]
-        self.rect = self.image.get_rect(midbottom=(randint(100, 700), 300))
+        self.rect = self.image.get_rect(midbottom=(randint(100, 700), 500))
         
         
         self.birdindex =0                                                               #controls the animation we'll need to change this depending on the speed and direction later on 
@@ -86,9 +86,10 @@ class duck(pygame.sprite.Sprite):
                 self.vy *= -1    
 
     def update(self):
+        self.duckmove()
         self.direction()
         self.animation()
-        self.duckmove()
+        
  
 #creating the crosshair sprite 
 class crosshair(pygame.sprite.Sprite):
@@ -191,8 +192,6 @@ cloud1 = pygame.image.load('assets/bg/cloud1.png')
 cloud1rect = cloud1.get_rect(topleft=(660, 60))
             
             
-  
-
 
 #timer used for all animatios right now placeholder 
 #timer = pygame.USEREVENT + 1
@@ -270,13 +269,6 @@ while True:
         
   
 
-    
-
-                         
-    
-    
-    
-    
     pygame.display.update()
     clock.tick(60)    
  
