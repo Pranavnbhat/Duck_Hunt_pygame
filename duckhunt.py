@@ -78,7 +78,7 @@ class duck(pygame.sprite.Sprite):
                 self.vy *= -1
                 
         elif self.directionindex==1:
-            self.rect.x -=self.vx   
+            self.rect.x +=self.vx   
             self.rect.y +=self.vy
             if self.rect.left <=0 or self.rect.right >=800: 
                 self.vx *= -1
