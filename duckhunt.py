@@ -99,24 +99,25 @@ class crosshair(pygame.sprite.Sprite):
         crosshair2=pygame.image.load('assets/crosshair/crosshairs_red.png').convert_alpha()
         crosshair1=pygame.transform.scale(crosshair1 , (25,25))
         crosshair2=pygame.transform.scale(crosshair2 , (25,25))
+        
         self.fire_sound = pygame.mixer.Sound('assets/sound/fire.mp3')
         self.relaod_sound=pygame.mixer.Sound('assets/sound/reload.mp3')
+       
         self.crosshairindex=0
         self.crosshairanim=[crosshair1,crosshair2]
         self.image=self.crosshairanim[self.crosshairindex]
         self.rect = self.image.get_rect()
+        
         self.reload = True
         self.reloadtime = pygame.USEREVENT + 1
         pygame.time.set_timer(self.reloadtime, 500, 1)
         
     def firesound(self,event):
-        if self.reload ==True :
+        if event.type == self.reloadtime and self.reload ==True :
             self.relaod_sound.play()
             self.reload= False
-            
-        
-            
-        if event.type == pygame.MOUSEBUTTONDOWN:
+
+        if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False:
             self.fire_sound.play()
             self.reload=True   
             pygame.time.set_timer(self.reloadtime, 500, 1)
@@ -158,6 +159,7 @@ font2 = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 72)
 font3 = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 24) 
 font4=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 24) 
 font5=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
+font6=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
 
 #groups
 duckgroup= pygame.sprite.GroupSingle()
@@ -165,7 +167,7 @@ duckgroup.add(duck())
 
 crosshairgroup = pygame.sprite.GroupSingle()
 crosshairgroup.add(crosshair())
-pygame.time.set_timer(crosshairgroup.sprite.reloadtime, 500, 1)     
+
 
 
 
@@ -267,7 +269,7 @@ while True:
           
         
   
-    font6=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
+    
     fps_text = font6.render(f"FPS: {int(clock.get_fps())}", False, (255, 255, 255))
     screen.blit(fps_text, (10, 10))
     pygame.display.update()
