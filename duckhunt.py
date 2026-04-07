@@ -74,7 +74,7 @@ class duck(pygame.sprite.Sprite):
             self.rect.y +=self.vy
             if self.rect.right >= 1024 or self.rect.left <= 0:
                 self.vx *= -1
-            elif self.rect.top <= 0 or self.rect.bottom >= 960:
+            elif self.rect.top <= 0 or self.rect.bottom >= 765:
                 self.vy *= -1
                 
         elif self.directionindex==1:
@@ -82,7 +82,7 @@ class duck(pygame.sprite.Sprite):
             self.rect.y +=self.vy
             if self.rect.left <=0 or self.rect.right >=1024: 
                 self.vx *= -1
-            elif self.rect.top <= 0 or self.rect.bottom >= 960:
+            elif self.rect.top <= 0 or self.rect.bottom >= 765:
                 self.vy *= -1    
 
     def update(self):
@@ -97,6 +97,8 @@ class crosshair(pygame.sprite.Sprite):
         super().__init__()
         crosshair1=pygame.image.load('assets/crosshair/crosshairs_white.png').convert_alpha()
         crosshair2=pygame.image.load('assets/crosshair/crosshairs_red.png').convert_alpha()
+        crosshair1=pygame.transform.scale(crosshair1 , (25,25))
+        crosshair2=pygame.transform.scale(crosshair2 , (25,25))
         self.fire_sound = pygame.mixer.Sound('assets/sound/fire.mp3')
         self.relaod_sound=pygame.mixer.Sound('assets/sound/reload.mp3')
         self.crosshairindex=0
