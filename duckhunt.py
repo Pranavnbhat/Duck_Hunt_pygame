@@ -108,19 +108,22 @@ class crosshair(pygame.sprite.Sprite):
         self.image=self.crosshairanim[self.crosshairindex]
         self.rect = self.image.get_rect()
         
-        self.reload = True
+        self.reload = False
         self.reloadtime = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.reloadtime, 500, 1)
+        
         
     def firesound(self,event):
         if event.type == self.reloadtime and self.reload ==True :
-            self.relaod_sound.play()
             self.reload= False
+            self.relaod_sound.play()
+            
+            
 
         if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False:
+            self.reload=True
             self.fire_sound.play()
-            self.reload=True   
-            pygame.time.set_timer(self.reloadtime, 500, 1)
+            pygame.time.set_timer(self.reloadtime, 500, 1)   
+            
             
     def display_crosshair(self,birdrect):                                #when ever you call this function outside now remebe to call it as   self.collision(duck.rect) not self.collision(duckgroup.sprite.rect) remember to use this everywhere 
         mousepos=pygame.mouse.get_pos()
@@ -137,8 +140,8 @@ class crosshair(pygame.sprite.Sprite):
         return collide                                         
         
 
-    def update(self,birdrect,event):
-        self.firesound(event)
+    def update(self,birdrect):
+        
         self.display_crosshair(birdrect)
         self.collision(birdrect)
 
@@ -200,7 +203,6 @@ cloud1rect = cloud1.get_rect(topleft=(660, 60))
 #pygame.time.set_timer(timer,1500) 
 
 
-
 while True:
     screen.fill((66, 192, 255))
     screen.blit(cloud2, cloud2rect)
@@ -211,23 +213,24 @@ while True:
     
     mousepos = pygame.mouse.get_pos()
     for event in pygame.event.get():
+        if gameactive:  crosshairgroup.sprite.firesound(event)
         if event.type==pygame.QUIT:
             pygame.quit()
             exit()
     if gameactive==True:
         pygame.mouse.set_visible(False)
+        
         if len(duckgroup)==0 and timer >=x: duckgroup.add(duck())            #x here will be the time dog takes to finish its animation after the duck hits the floor 
             
         duckgroup.draw(screen)
         duckgroup.update()
-        crosshairgroup.draw(screen)
-        crosshairgroup.update(duckgroup.sprite.rect,event) 
+         
             
         screen.blit(tree, treerect)
-        
         screen.blit(grass, grassrect)
         
-           
+        crosshairgroup.draw(screen)
+        crosshairgroup.update(duckgroup.sprite.rect)  
             
     else:
         screen.fill((0,0,0))
