@@ -110,7 +110,7 @@ class crosshair(pygame.sprite.Sprite):
         pygame.time.set_timer(self.reloadtime, 500, 1)
         
     def firesound(self,event):
-        if self.reload ==True and event.type==self.reloadtime:
+        if self.reload ==True :
             self.relaod_sound.play()
             self.reload= False
             
