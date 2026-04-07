@@ -34,16 +34,19 @@ class duck(pygame.sprite.Sprite):
         self.left= [duckleft1,duckleft2,duckleft3]
         self.right=[duckright1,duckright2,duckright3]
         
+        self.fall=[duckfall1,duckfall2, duckfall3, duckfall4]
         
-
+        self.move=True
+        
         self.vx = choice([ -4, -3, 3, 4])
         self.vy = choice([ -4, -3, 3, 4]) 
         
         self.image = self.right[0]
-        self.rect = self.image.get_rect(midbottom=(randint(100, 700), 500))
+        self.rect = self.image.get_rect(midbottom=(randint(100, 700), 760))
         
         
-        self.birdindex =0                                                               #controls the animation we'll need to change this depending on the speed and direction later on 
+        
+        self.birdindex =0                                                               
         self.fallindex =0
         self.directionindex=0
      
@@ -69,21 +72,41 @@ class duck(pygame.sprite.Sprite):
             self.image=self.left[int(self.birdindex)]
             
     def duckmove(self):
-        if self.directionindex==0:
-            self.rect.x +=self.vx 
-            self.rect.y +=self.vy
-            if self.rect.right >= 1024 or self.rect.left <= 0:
-                self.vx *= -1
-            elif self.rect.top <= 0 or self.rect.bottom >= 765:
-                self.vy *= -1
+        if self.move:
+            if self.directionindex==0:
+                self.rect.x +=self.vx 
+                self.rect.y +=self.vy
+                if self.rect.right >= 1024 or self.rect.left <= 0:
+                    self.vx *= -1
+                elif self.rect.top <= 0 or self.rect.bottom >= 765:
+                    self.vy *= -1
+                    
+            elif self.directionindex==1:
+                self.rect.x +=self.vx   
+                self.rect.y +=self.vy
+                if self.rect.left <=0 or self.rect.right >=1024: 
+                    self.vx *= -1
+                elif self.rect.top <= 0 or self.rect.bottom >= 765:
+                    self.vy *= -1  
+    
+    def duckfall(self,shoot,crosshairindex):
+        mousepos=pygame.mouse.get_pos()
+        if self.move==False or (shoot==True and crosshairindex==1):    #add mousebutton down also here 
+            self.move =False
+            self.image=self.fall[int(self.fallindex)]
+            self.fallindex +=0.1
+            if self.fallindex> len(self.fall):  self.fallindex=0    
                 
-        elif self.directionindex==1:
-            self.rect.x +=self.vx   
-            self.rect.y +=self.vy
-            if self.rect.left <=0 or self.rect.right >=1024: 
-                self.vx *= -1
-            elif self.rect.top <= 0 or self.rect.bottom >= 765:
-                self.vy *= -1    
+            if self.rect.bottom <= 760:
+                self.rect.y +=5
+            else:
+                self.kill() 
+                self.move =True
+                #start dog animation timer here optionaly add dog animations here too 
+            
+            
+    
+        
 
     def update(self):
         self.duckmove()
@@ -102,6 +125,7 @@ class crosshair(pygame.sprite.Sprite):
         
         self.fire_sound = pygame.mixer.Sound('assets/sound/fire.mp3')
         self.relaod_sound=pygame.mixer.Sound('assets/sound/reload.mp3')
+        self.shoot=False # this wil be true only the frame the gun fires 
        
         self.crosshairindex=0
         self.crosshairanim=[crosshair1,crosshair2]
@@ -115,10 +139,13 @@ class crosshair(pygame.sprite.Sprite):
     def firesound(self,event):
         if self.reload ==True :
             self.reload= False
+            self.shoot=False
             self.relaod_sound.play()
+            
         if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False:
             self.reload=True
             self.fire_sound.play()
+            self.shoot = True
                
             
             
@@ -210,7 +237,9 @@ while True:
     
     mousepos = pygame.mouse.get_pos()
     for event in pygame.event.get():
-        if gameactive:  crosshairgroup.sprite.firesound(event)
+        if gameactive:  
+            crosshairgroup.sprite.firesound(event)
+            duckgroup.sprite.duckfall(crosshairgroup.sprite.shoot, crosshairgroup.sprite.crosshairindex)
         if event.type==pygame.QUIT:
             pygame.quit()
             exit()
