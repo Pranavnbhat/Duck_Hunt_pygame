@@ -107,18 +107,19 @@ class crosshair(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.reload = True
         self.reloadtime = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.reloadtime, 500, 1)
         
     def firesound(self,event):
         if self.reload ==True and event.type==self.reloadtime:
             self.relaod_sound.play()
             self.reload= False
             
-        elif self.reload==False:
+        
             
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.fire_sound.play()
-                self.reload=True   
-                pygame.time.set_timer(self.reloadtime, 500, 1)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.fire_sound.play()
+            self.reload=True   
+            pygame.time.set_timer(self.reloadtime, 500, 1)
             
     def display_crosshair(self,birdrect):                                #when ever you call this function outside now remebe to call it as   self.collision(duck.rect) not self.collision(duckgroup.sprite.rect) remember to use this everywhere 
         mousepos=pygame.mouse.get_pos()
@@ -266,8 +267,9 @@ while True:
           
         
   
-    
-    
+    font6=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
+    fps_text = font6.render(f"FPS: {int(clock.get_fps())}", False, (255, 255, 255))
+    screen.blit(fps_text, (10, 10))
     pygame.display.update()
     clock.tick(60)    
  
