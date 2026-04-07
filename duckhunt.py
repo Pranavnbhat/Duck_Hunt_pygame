@@ -98,7 +98,7 @@ class duck(pygame.sprite.Sprite):
             if self.fallindex> len(self.fall):  self.fallindex=0    
                 
             if self.rect.bottom <= 760:
-                self.rect.y +=5
+                self.rect.y +=6.5
             else:
                 self.kill() 
                 self.move =True
@@ -108,10 +108,11 @@ class duck(pygame.sprite.Sprite):
     
         
 
-    def update(self):
+    def update(self,shoot,crosshairindex):
         self.duckmove()
         self.direction()
         self.animation()
+        self.duckfall(shoot,crosshairindex)
         
  
 #creating the crosshair sprite 
@@ -239,7 +240,7 @@ while True:
     for event in pygame.event.get():
         if gameactive:  
             crosshairgroup.sprite.firesound(event)
-            duckgroup.sprite.duckfall(crosshairgroup.sprite.shoot, crosshairgroup.sprite.crosshairindex)
+            
         if event.type==pygame.QUIT:
             pygame.quit()
             exit()
@@ -249,7 +250,7 @@ while True:
         if len(duckgroup)==0 and timer >=x: duckgroup.add(duck())            #x here will be the time dog takes to finish its animation after the duck hits the floor 
             
         duckgroup.draw(screen)
-        duckgroup.update()
+        duckgroup.update(crosshairgroup.sprite.shoot, crosshairgroup.sprite.crosshairindex)
          
             
         screen.blit(tree, treerect)
