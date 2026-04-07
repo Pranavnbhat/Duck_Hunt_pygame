@@ -113,16 +113,13 @@ class crosshair(pygame.sprite.Sprite):
         
         
     def firesound(self,event):
-        if event.type == self.reloadtime and self.reload ==True :
+        if self.reload ==True :
             self.reload= False
             self.relaod_sound.play()
-            
-            
-
         if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False:
             self.reload=True
             self.fire_sound.play()
-            pygame.time.set_timer(self.reloadtime, 500, 1)   
+               
             
             
     def display_crosshair(self,birdrect):                                #when ever you call this function outside now remebe to call it as   self.collision(duck.rect) not self.collision(duckgroup.sprite.rect) remember to use this everywhere 
