@@ -29,6 +29,8 @@ class duck(pygame.sprite.Sprite):
         duckfall3= pygame.image.load('assets/duck/fall3.png').convert_alpha()
         duckfall4= pygame.image.load('assets/duck/fall4.png').convert_alpha()
         
+        
+        
         duckdead= pygame.image.load('assets/duck/dead.png').convert_alpha()
         
         self.left= [duckleft1,duckleft2,duckleft3]
@@ -41,8 +43,12 @@ class duck(pygame.sprite.Sprite):
         self.vx = choice([ -4, -3, 3, 4])
         self.vy = choice([ -4, -3, 3, 4]) 
         
-        self.image = self.right[0]
+        self.image = self.right[1]
         self.rect = self.image.get_rect(midbottom=(randint(100, 700), 760))
+        
+        
+         
+        
         
         
         
@@ -95,14 +101,19 @@ class duck(pygame.sprite.Sprite):
             self.move =False
             self.image=self.fall[int(self.fallindex)]
             self.fallindex +=0.1
-            if self.fallindex> len(self.fall):  self.fallindex=0    
+            if self.fallindex> len(self.fall):  self.fallindex=0 
+             
+            
                 
             if self.rect.bottom <= 760:
-                self.rect.y +=6.5
+                self.rect.y +=7
             else:
                 self.kill() 
                 self.move =True
                 #start dog animation timer here optionaly add dog animations here too 
+            
+
+            
             
             
     
@@ -197,9 +208,6 @@ crosshairgroup = pygame.sprite.GroupSingle()
 crosshairgroup.add(crosshair())
 
 
-
-
-
 screen.fill((66, 192, 255))
             
 tree=pygame.image.load('assets/bg/tree.png')
@@ -247,7 +255,7 @@ while True:
     if gameactive==True:
         pygame.mouse.set_visible(False)
         
-        if len(duckgroup)==0 and timer >=x: duckgroup.add(duck())            #x here will be the time dog takes to finish its animation after the duck hits the floor 
+        if len(duckgroup)==0 : duckgroup.add(duck())            #x here will be the time dog takes to finish its animation after the duck hits the floor 
             
         duckgroup.draw(screen)
         duckgroup.update(crosshairgroup.sprite.shoot, crosshairgroup.sprite.crosshairindex)
@@ -257,7 +265,8 @@ while True:
         screen.blit(grass, grassrect)
         
         crosshairgroup.draw(screen)
-        crosshairgroup.update(duckgroup.sprite.rect)  
+        if duckgroup.sprite:
+            crosshairgroup.update(duckgroup.sprite.rect)  
             
     else:
         screen.fill((0,0,0))
@@ -297,9 +306,7 @@ while True:
             pygame.quit()
             exit()
           
-        
-  
-    
+ 
     fps_text = font6.render(f"FPS: {int(clock.get_fps())}", False, (255, 255, 255))
     screen.blit(fps_text, (10, 10))
     pygame.display.update()
