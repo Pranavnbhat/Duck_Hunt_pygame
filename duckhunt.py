@@ -140,7 +140,7 @@ class dog(pygame.sprite.Sprite):
     
     def dog_win_animation(self):
         if len(duckgroup)==0:
-            crosshairgroup.add(crosshair())
+            
             if self.rect.top <= 760 and self.down==False:
                 self.rect.y-=5
                 if self.rect.top==550:
@@ -149,7 +149,7 @@ class dog(pygame.sprite.Sprite):
                 self.rect.y +=5 
                 if self.rect.top >= 790:
                     self.kill()
-                    crosshairgroup.add(crosshair())
+                    
 
     def update(self):
         self.dog_win_animation()
@@ -162,6 +162,8 @@ class crosshair(pygame.sprite.Sprite):
         super().__init__()
         crosshair1=pygame.image.load('assets/crosshair/crosshairs_white.png').convert_alpha()
         crosshair2=pygame.image.load('assets/crosshair/crosshairs_red.png').convert_alpha()
+        crosshair3=pygame.image.load('assets/crosshair/invis.png').convert_alpha()
+        
         crosshair1=pygame.transform.scale(crosshair1 , (25,25))
         crosshair2=pygame.transform.scale(crosshair2 , (25,25))
         
@@ -170,7 +172,7 @@ class crosshair(pygame.sprite.Sprite):
         self.shoot=False # this wil be true only the frame the gun fires 
        
         self.crosshairindex=0
-        self.crosshairanim=[crosshair1,crosshair2]
+        self.crosshairanim=[crosshair1,crosshair2,crosshair3]
         self.image=self.crosshairanim[self.crosshairindex]
         self.rect = self.image.get_rect()
         
@@ -184,7 +186,7 @@ class crosshair(pygame.sprite.Sprite):
             self.shoot=False
             self.relaod_sound.play()
             
-        if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False:
+        if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False and len(duckgroup)!=0:
             self.reload=True
             self.fire_sound.play()
             self.shoot = True
@@ -194,7 +196,10 @@ class crosshair(pygame.sprite.Sprite):
     def display_crosshair(self,birdrect):                                #when ever you call this function outside now remebe to call it as   self.collision(duck.rect) not self.collision(duckgroup.sprite.rect) remember to use this everywhere 
         mousepos=pygame.mouse.get_pos()
         self.rect = self.image.get_rect(center=mousepos)
-        if self.collision(birdrect):
+        if len(doggroup)!=0:
+            self.crosshairindex=2
+          
+        elif self.collision(birdrect):
             self.crosshairindex=1
         else:
             self.crosshairindex=0    
@@ -305,8 +310,11 @@ while True:
         
         
         crosshairgroup.draw(screen)
-        if duckgroup.sprite:
-            crosshairgroup.update(duckgroup.sprite.rect)  
+        if duckgroup.sprite :
+            crosshairgroup.update(duckgroup.sprite.rect)
+        else:
+            crosshairgroup.update(pygame.Rect(-100, -100, 0, 0))
+
             
     else:
         screen.fill((0,0,0))
