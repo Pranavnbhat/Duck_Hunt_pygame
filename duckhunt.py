@@ -140,14 +140,16 @@ class dog(pygame.sprite.Sprite):
     
     def dog_win_animation(self):
         if len(duckgroup)==0:
+            crosshairgroup.add(crosshair())
             if self.rect.top <= 760 and self.down==False:
-                self.rect.y-=2
+                self.rect.y-=5
                 if self.rect.top==550:
                     self.down=True
             elif self.down==True:
-                self.rect.y +=2 
+                self.rect.y +=5 
                 if self.rect.top >= 790:
                     self.kill()
+                    crosshairgroup.add(crosshair())
 
     def update(self):
         self.dog_win_animation()
@@ -277,7 +279,7 @@ while True:
     
 
     mousepos = pygame.mouse.get_pos()
-    print(mousepos)
+
     for event in pygame.event.get():
         if gameactive:  
             crosshairgroup.sprite.firesound(event)
