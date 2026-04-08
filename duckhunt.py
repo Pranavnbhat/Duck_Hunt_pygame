@@ -99,7 +99,9 @@ class duck(pygame.sprite.Sprite):
             self.image=self.fall[int(self.fallindex)]
             self.fallindex +=0.1
             if self.fallindex> len(self.fall):  self.fallindex=0 
-            duck_x = self.rect.centerx   
+            duck_x = self.rect.centerx 
+            if 0<duck_x<200:  duck_x=325
+            elif 750<duck_x<900:  duck_x=660
             
                 
             if self.rect.bottom <= 760:
@@ -284,7 +286,7 @@ while True:
     
 
     mousepos = pygame.mouse.get_pos()
-
+    print(mousepos)
     for event in pygame.event.get():
         if gameactive:  
             crosshairgroup.sprite.firesound(event)
