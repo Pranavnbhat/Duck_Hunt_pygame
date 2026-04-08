@@ -36,7 +36,7 @@ class duck(pygame.sprite.Sprite):
         self.left= [duckleft1,duckleft2,duckleft3]
         self.right=[duckright1,duckright2,duckright3]
         
-        # self.dogx=0
+        self.x=0
         
         self.fall=[duckfall1,duckfall2, duckfall3, duckfall4]
         
@@ -48,12 +48,7 @@ class duck(pygame.sprite.Sprite):
         self.image = self.right[1]
         self.rect = self.image.get_rect(midbottom=(randint(100, 700), 760))
         
-        
-         
-        
-        
-        
-        
+   
         self.birdindex =0                                                               
         self.fallindex =0
         self.directionindex=0
@@ -109,6 +104,7 @@ class duck(pygame.sprite.Sprite):
                 
             if self.rect.bottom <= 760:
                 self.rect.y +=7
+                self.x=self.rect.x               #this is for the dog 
                 
             else:
                  
@@ -143,7 +139,7 @@ class dog(pygame.sprite.Sprite):
     
     def dog_win_animation(self,x):
         if len(duckgroup)==0:
-            if self.rect.top.y > 700:
+            if self.rect.top > 700:
                 self.rect.y-=4
             else: 
                 self.rect.y +=4 
@@ -151,19 +147,9 @@ class dog(pygame.sprite.Sprite):
                     #duckgroup.add(duck())                
     
     def update(self,x):
-        self.dog_win_animation()
+        self.dog_win_animation(x)
         
         
-    
-        
-
-
-
-
-
-
-
-
 
 #creating the crosshair sprite 
 class crosshair(pygame.sprite.Sprite):
@@ -246,6 +232,9 @@ duckgroup.add(duck())
 crosshairgroup = pygame.sprite.GroupSingle()
 crosshairgroup.add(crosshair())
 
+if duckgroup.sprite:
+    x=duckgroup.sprite.x
+
 doggroup=pygame.sprite.GroupSingle()
 doggroup.add(dog(x)) 
 
@@ -284,9 +273,7 @@ while True:
     screen.blit(cloud3, cloud3rect)
     screen.blit(cloud1, cloud1rect) 
     
-    z=duckgroup.sprite.dogx
-    print(z)
-    
+
     mousepos = pygame.mouse.get_pos()
     for event in pygame.event.get():
         if gameactive:  
