@@ -36,7 +36,7 @@ class duck(pygame.sprite.Sprite):
         self.left= [duckleft1,duckleft2,duckleft3]
         self.right=[duckright1,duckright2,duckright3]
         
-        self.x=0
+        
         
         self.fall=[duckfall1,duckfall2, duckfall3, duckfall4]
         
@@ -99,16 +99,17 @@ class duck(pygame.sprite.Sprite):
             self.image=self.fall[int(self.fallindex)]
             self.fallindex +=0.1
             if self.fallindex> len(self.fall):  self.fallindex=0 
-             
+            duck_x = self.rect.centerx   
             
                 
             if self.rect.bottom <= 760:
                 self.rect.y +=7
-                self.x=self.rect.x               #this is for the dog 
+                             #this is for the dog 
                 
             else:
                  
-                self.kill() 
+                self.kill()
+                doggroup.add(dog(duck_x))
                 self.move =True
                 #start dog animation timer here optionaly add dog animations here too 
             
@@ -130,24 +131,26 @@ class dog(pygame.sprite.Sprite):
         super().__init__()
         dogwin=pygame.image.load('assets/dog/dogwin.png')
         dogwin=pygame.transform.scale(dogwin, (150,150))
-        
+        self.down=False
         
         
         #x=0
         self.image=dogwin
-        self.rect=self.image.get_rect(midtop =(x,900))     #x here is the position of duck dying 
+        self.rect=self.image.get_rect(midtop =(x,760))     #x here is the position of duck dying 
     
-    def dog_win_animation(self,x):
+    def dog_win_animation(self):
         if len(duckgroup)==0:
-            if self.rect.top > 700:
-                self.rect.y-=4
-            else: 
-                self.rect.y +=4 
-                #if self.centre =>placeholder:         #placehoolder here has to be lower than the point where the dog spawns     
-                    #duckgroup.add(duck())                
-    
-    def update(self,x):
-        self.dog_win_animation(x)
+            if self.rect.top <= 760 and self.down==False:
+                self.rect.y-=2
+                if self.rect.top==550:
+                    self.down=True
+            elif self.down==True:
+                self.rect.y +=2 
+                if self.rect.top >= 790:
+                    self.kill()
+
+    def update(self):
+        self.dog_win_animation()
         
         
 
@@ -232,11 +235,10 @@ duckgroup.add(duck())
 crosshairgroup = pygame.sprite.GroupSingle()
 crosshairgroup.add(crosshair())
 
-if duckgroup.sprite:
-    x=duckgroup.sprite.x
+
 
 doggroup=pygame.sprite.GroupSingle()
-doggroup.add(dog(x)) 
+
 
 
 screen.fill((66, 192, 255))
@@ -275,6 +277,7 @@ while True:
     
 
     mousepos = pygame.mouse.get_pos()
+    print(mousepos)
     for event in pygame.event.get():
         if gameactive:  
             crosshairgroup.sprite.firesound(event)
@@ -285,17 +288,19 @@ while True:
     if gameactive==True:
         pygame.mouse.set_visible(False)
         
-        if len(duckgroup)==0 : duckgroup.add(duck())            #x here will be the time dog takes to finish its animation after the duck hits the floor 
+        if len(duckgroup)==0 and len(doggroup)==0: duckgroup.add(duck())            #x here will be the time dog takes to finish its animation after the duck hits the floor 
             
         duckgroup.draw(screen)
         duckgroup.update(crosshairgroup.sprite.shoot, crosshairgroup.sprite.crosshairindex)
-         
+        
+        doggroup.update()
+        doggroup.draw(screen)        
             
         screen.blit(tree, treerect)
         screen.blit(grass, grassrect)
         
-        doggroup.draw(screen)
-        doggroup.update(x)
+        
+        
         
         crosshairgroup.draw(screen)
         if duckgroup.sprite:
