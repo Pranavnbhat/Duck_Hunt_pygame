@@ -36,6 +36,8 @@ class duck(pygame.sprite.Sprite):
         self.left= [duckleft1,duckleft2,duckleft3]
         self.right=[duckright1,duckright2,duckright3]
         
+        # self.dogx=0
+        
         self.fall=[duckfall1,duckfall2, duckfall3, duckfall4]
         
         self.move=True
@@ -107,17 +109,14 @@ class duck(pygame.sprite.Sprite):
                 
             if self.rect.bottom <= 760:
                 self.rect.y +=7
+                
             else:
+                 
                 self.kill() 
                 self.move =True
                 #start dog animation timer here optionaly add dog animations here too 
             
 
-            
-            
-            
-    
-        
 
     def update(self,shoot,crosshairindex):
         self.duckmove()
@@ -125,7 +124,47 @@ class duck(pygame.sprite.Sprite):
         self.animation()
         self.duckfall(shoot,crosshairindex)
         
- 
+
+
+
+
+#creating the dog sprite 
+class dog(pygame.sprite.Sprite):
+    def __init__(self,x):
+        super().__init__()
+        dogwin=pygame.image.load('assets/dog/dogwin.png')
+        dogwin=pygame.transform.scale(dogwin, (150,150))
+        
+        
+        
+        #x=0
+        self.image=dogwin
+        self.rect=self.image.get_rect(midtop =(x,900))     #x here is the position of duck dying 
+    
+    def dog_win_animation(self,x):
+        if len(duckgroup)==0:
+            if self.rect.top.y > 700:
+                self.rect.y-=4
+            else: 
+                self.rect.y +=4 
+                #if self.centre =>placeholder:         #placehoolder here has to be lower than the point where the dog spawns     
+                    #duckgroup.add(duck())                
+    
+    def update(self,x):
+        self.dog_win_animation()
+        
+        
+    
+        
+
+
+
+
+
+
+
+
+
 #creating the crosshair sprite 
 class crosshair(pygame.sprite.Sprite):
     def __init__(self):
@@ -207,6 +246,9 @@ duckgroup.add(duck())
 crosshairgroup = pygame.sprite.GroupSingle()
 crosshairgroup.add(crosshair())
 
+doggroup=pygame.sprite.GroupSingle()
+doggroup.add(dog(x)) 
+
 
 screen.fill((66, 192, 255))
             
@@ -242,7 +284,8 @@ while True:
     screen.blit(cloud3, cloud3rect)
     screen.blit(cloud1, cloud1rect) 
     
-    
+    z=duckgroup.sprite.dogx
+    print(z)
     
     mousepos = pygame.mouse.get_pos()
     for event in pygame.event.get():
@@ -263,6 +306,9 @@ while True:
             
         screen.blit(tree, treerect)
         screen.blit(grass, grassrect)
+        
+        doggroup.draw(screen)
+        doggroup.update(x)
         
         crosshairgroup.draw(screen)
         if duckgroup.sprite:
