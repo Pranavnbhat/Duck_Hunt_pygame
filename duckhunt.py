@@ -42,8 +42,17 @@ class duck(pygame.sprite.Sprite):
         
         self.move=True
         
-        self.vx = choice([ -4, -3, 3, 4])
-        self.vy = choice([ -4, -3, 3, 4]) 
+        global gameround
+        
+        if 0<=gameround<=29:
+            speed=3
+        elif 30<=gameround<=59:
+            speed=5
+        elif gameround>=60:
+            speed=7
+            
+        self.vx = choice([ (-1*speed)-1, -1*speed, speed, speed+1])
+        self.vy = choice([(-1*speed)-1, -1*speed, speed, speed+1])
         
         self.image = self.right[1]
         self.rect = self.image.get_rect(midbottom=(randint(100, 700), 760))
@@ -101,7 +110,7 @@ class duck(pygame.sprite.Sprite):
             if self.fallindex> len(self.fall):  self.fallindex=0 
             duck_x = self.rect.centerx 
             if 0<duck_x<200:  duck_x=325
-            elif 750<duck_x<900:  duck_x=660
+            elif 750<duck_x<910:  duck_x=660
             
                 
             if self.rect.bottom <= 760:
@@ -112,6 +121,7 @@ class duck(pygame.sprite.Sprite):
                  
                 self.kill()
                 doggroup.add(dog(duck_x))
+                
                 self.move =True
                 #start dog animation timer here optionaly add dog animations here too 
             
@@ -121,7 +131,7 @@ class duck(pygame.sprite.Sprite):
         self.duckmove()
         self.direction()
         self.animation()
-        self.duckfall(shoot,crosshairindex)
+        self.duckfall(shoot,crosshairindex,)
         
 
 
@@ -141,6 +151,8 @@ class dog(pygame.sprite.Sprite):
         self.rect=self.image.get_rect(midtop =(x,760))     #x here is the position of duck dying 
     
     def dog_win_animation(self):
+        global gameround
+        global ammo
         if len(duckgroup)==0:
             
             if self.rect.top <= 760 and self.down==False:
@@ -151,6 +163,8 @@ class dog(pygame.sprite.Sprite):
                 self.rect.y +=5 
                 if self.rect.top >= 790:
                     self.kill()
+                    gameround+=1
+                    ammo =3
                     
 
     def update(self):
@@ -178,11 +192,14 @@ class crosshair(pygame.sprite.Sprite):
         self.image=self.crosshairanim[self.crosshairindex]
         self.rect = self.image.get_rect()
         
+        
+        
         self.reload = False
         self.reloadtime = pygame.USEREVENT + 1
         
         
     def firesound(self,event):
+        global ammo 
         if self.reload ==True :
             self.reload= False
             self.shoot=False
@@ -191,6 +208,7 @@ class crosshair(pygame.sprite.Sprite):
         if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False and len(duckgroup)!=0:
             self.reload=True
             self.fire_sound.play()
+            ammo -=1
             self.shoot = True
                
             
@@ -225,6 +243,8 @@ pygame.display.set_caption('Duck Hunt')
 clock = pygame.time.Clock()
 font = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 50)  
 gameactive= False
+gameround=0
+ammo =3 
 
 
 
@@ -273,9 +293,9 @@ cloud1rect = cloud1.get_rect(topleft=(660, 60))
             
             
 
-#timer used for all animatios right now placeholder 
-#timer = pygame.USEREVENT + 1
-#pygame.time.set_timer(timer,1500) 
+#timer 
+roundtime = pygame.USEREVENT + 2
+pygame.time.set_timer(roundtime,5000)
 
 
 while True:
@@ -286,7 +306,7 @@ while True:
     
 
     mousepos = pygame.mouse.get_pos()
-    print(mousepos)
+    #print(mousepos)
     for event in pygame.event.get():
         if gameactive:  
             crosshairgroup.sprite.firesound(event)
@@ -316,6 +336,9 @@ while True:
             crosshairgroup.update(duckgroup.sprite.rect)
         else:
             crosshairgroup.update(pygame.Rect(-100, -100, 0, 0))
+            
+        round_text=font6.render(f" {(gameround//10)+1}", False, (255, 255, 255))
+        screen.blit(round_text, (130,807))    
 
             
     else:
@@ -359,6 +382,8 @@ while True:
  
     fps_text = font6.render(f"FPS: {int(clock.get_fps())}", False, (255, 255, 255))
     screen.blit(fps_text, (10, 10))
+    print(ammo)
+    
     pygame.display.update()
     clock.tick(60)    
  
