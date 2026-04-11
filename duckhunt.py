@@ -290,6 +290,10 @@ cloud3rect = cloud3.get_rect(topleft=(480, 25))
 
 cloud1 = pygame.image.load('assets/bg/cloud1.png')
 cloud1rect = cloud1.get_rect(topleft=(660, 60))
+
+bullet=pygame.image.load('assets/bg/bullet.png')
+
+
             
             
 
@@ -306,7 +310,7 @@ while True:
     
 
     mousepos = pygame.mouse.get_pos()
-    #print(mousepos)
+    print(mousepos)
     for event in pygame.event.get():
         if gameactive:  
             crosshairgroup.sprite.firesound(event)
@@ -340,6 +344,23 @@ while True:
         round_text=font6.render(f" {(gameround//10)+1}", False, (255, 255, 255))
         screen.blit(round_text, (130,807))    
 
+
+        if ammo==1:
+            bulletrect=bullet.get_rect(center=(110,880))
+            screen.blit(bullet, bulletrect)
+        if ammo==2: 
+            bulletrect1 = bullet.get_rect(center=(110, 880))
+            screen.blit(bullet, bulletrect1) 
+            bulletrect2 = bullet.get_rect(center=(140, 880))
+            screen.blit(bullet, bulletrect2)    
+        if ammo==3: 
+            bulletrect1 = bullet.get_rect(center=(110, 880))
+            screen.blit(bullet, bulletrect1) 
+            bulletrect2 = bullet.get_rect(center=(140, 880))
+            screen.blit(bullet, bulletrect2)
+            bulletrect3 = bullet.get_rect(center=(170, 880))
+            screen.blit(bullet, bulletrect3)
+            
             
     else:
         screen.fill((0,0,0))
@@ -382,7 +403,7 @@ while True:
  
     fps_text = font6.render(f"FPS: {int(clock.get_fps())}", False, (255, 255, 255))
     screen.blit(fps_text, (10, 10))
-    print(ammo)
+    #print(ammo)
     
     pygame.display.update()
     clock.tick(60)    
