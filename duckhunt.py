@@ -159,6 +159,15 @@ class dog(pygame.sprite.Sprite):
         dog7 = pygame.image.load('assets/dog/dog7.png')
         dog8 = pygame.image.load('assets/dog/dog8.png')
         
+        dog1 = pygame.transform.scale(dog1, (150, 150))
+        dog2 = pygame.transform.scale(dog2, (150, 150))
+        dog3 = pygame.transform.scale(dog3, (150, 150))
+        dog4 = pygame.transform.scale(dog4, (150, 150))
+        dog5 = pygame.transform.scale(dog5, (150, 150))
+        dog6 = pygame.transform.scale(dog6, (150, 150))
+        dog7 = pygame.transform.scale(dog7, (150, 150))
+        dog8 = pygame.transform.scale(dog8, (150, 150))
+        
         
         
         
@@ -172,9 +181,11 @@ class dog(pygame.sprite.Sprite):
         self.image=dogwin
         self.rect=self.image.get_rect(midtop =(x,760))     #x here is the position of duck dying 
         
+        
         if round_intro==True and gameactive==True:
             self.image=self.doglist[int(self.dogindex)]
             self.rect = self.image.get_rect(bottomleft=(0,770))
+            
     
     def dog_win_animation(self):
         global gameround
@@ -196,16 +207,29 @@ class dog(pygame.sprite.Sprite):
         if round_intro==True:
             if self.rect.x< 500 :
                 self.dogindex+=0.1
-                if self.dogindex>4: dogindex=0
-                self.rect.x+=3
-            
-            if self.rect.x>=500:
+                if self.dogindex>4: self.dogindex=0
+                self.image=self.doglist[int(self.dogindex)]
                 
-                self.dogindex+=.05
-                if self.dogindex>7 or self.dogindex<4: dogindex=4
+                self.rect.x+=2
+            
+            elif self.rect.centerx>=500:
+                
+                
+                if self.dogindex<5:  self.dogindex=5
+                self.dogindex+=0.05
+                self.image=self.doglist[int(self.dogindex)]
+                
+                if self.dogindex>=6:
+                    
+                    if self.dogindex>7 :  self.dogindex=7
+                    self.dogindex+=0.04
+                    self.image=self.doglist[int(self.dogindex)]
+                    self.rect.x+=3
                     
                 
-                self.rect.x+=3 
+                    
+                
+                
                 
                 
                 if self.rect.centery>=560 and self.down==False:
@@ -213,7 +237,7 @@ class dog(pygame.sprite.Sprite):
                     if self.rect.centery<560:
                         self.down=True
                 elif self.down==True:
-                    self.rect.y +=3
+                    self.rect.y +=3.5
                     if self.rect.top >= 790:
                         self.kill()
                         round_intro=False
@@ -387,13 +411,24 @@ while True:
     if round_intro==True and gameactive==True:
         screen.blit(round_intro_counter, round_intro_counter_rect)
         round_text=font6.render(f" {(gameround//10)+1}", False, (255, 255, 255))
-        screen.blit(round_text, (505,190))
+        screen.blit(round_text, (480,190))
         
-        screen.blit(tree, treerect)
-        screen.blit(grass, grassrect)
+        if doggroup.sprite.dogindex>=7:
+            doggroup.update()
+            doggroup.draw(screen)    
+            screen.blit(tree, treerect)
+            screen.blit(grass, grassrect)
+        else:
+            screen.blit(tree, treerect)
+            screen.blit(grass, grassrect)
+            doggroup.update()
+            doggroup.draw(screen)
+            
+                
         
-        doggroup.update()
-        doggroup.draw(screen)
+        
+        
+        
         
         
         
@@ -405,7 +440,7 @@ while True:
             duckcount+=1
             if duckcount%10 ==0 and duckcount!=0:
                 round_intro=True
-                doggroup.add(dog(0))           #confirm why 0
+                doggroup.add(dog(0))           
             
         duckgroup.draw(screen)
         duckgroup.update(crosshairgroup.sprite.shoot, crosshairgroup.sprite.crosshairindex)
@@ -481,7 +516,7 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen3rect.collidepoint(mousepos):
             gameactive=True
             round_intro=True
-            doggroup.add(dog(0))           #confirm why 0 
+            doggroup.add(dog(0))           
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen4rect.collidepoint(mousepos):
             pygame.quit()
             exit()
