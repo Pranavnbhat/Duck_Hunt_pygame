@@ -109,7 +109,7 @@ class duck(pygame.sprite.Sprite):
             
     def duckmove(self):
         if self.move:
-            if not self.flapy_played:
+            if not self.flapy_played and not round_intro:
                 self.flap.play(-1)
                 self.flapy_played=True
                 
@@ -136,12 +136,13 @@ class duck(pygame.sprite.Sprite):
         if self.move==False or (shoot==True and crosshairindex==1):    #add mousebutton down also here 
             self.move =False
             self.flap.stop()
-            score+=500
+            
         
             if not self.score_captured:
                 self.score_x = self.rect.centerx
                 self.score_y = self.rect.centery
                 self.score_captured = True
+                score+=500
                   
         
             if not self.fallsound_played:
@@ -155,7 +156,7 @@ class duck(pygame.sprite.Sprite):
             duck_x = self.rect.centerx
             
             
-            screen.blit(self.score_text, (self.score_x,self.score_y))  
+             
             
             if 0<duck_x<200:  duck_x=325
             elif 750<duck_x<910:  duck_x=660
@@ -254,6 +255,7 @@ class dog(pygame.sprite.Sprite):
     def dog_intro(self):
         global ammo
         global round_intro
+        global round_intro_sound_played
         if round_intro==True:
             if self.rect.x< 500 :
                 self.dogindex+=0.1
@@ -291,7 +293,9 @@ class dog(pygame.sprite.Sprite):
                     if self.rect.top >= 790:
                         self.kill()
                         ammo=3
+                        round_intro_sound_played = False
                         round_intro=False
+                        
                 
         
 
@@ -477,6 +481,7 @@ while True:
         
         screen.blit(round_intro_counter, round_intro_counter_rect)
         round_text=font6.render(f" {(gameround//10)+1}", False, (255, 255, 255))
+        
         screen.blit(round_text, (480,190))
         
         if doggroup.sprite.dogindex>=7:
@@ -501,6 +506,7 @@ while True:
             duckcount+=1
             if duckcount%10 ==0 and duckcount!=0:
                 round_intro=True
+                
                 doggroup.add(dog(0))           
             
         duckgroup.draw(screen)
@@ -512,6 +518,8 @@ while True:
         screen.blit(tree, treerect)
         screen.blit(grass, grassrect)
         
+        if duckgroup.sprite:   screen.blit(duckgroup.sprite.score_text, (duckgroup.sprite.score_x,duckgroup.sprite.score_y)) 
+        
 
         
         crosshairgroup.draw(screen)
@@ -522,6 +530,9 @@ while True:
             
         round_text=font6.render(f" {(gameround//10)+1}", False, (255, 255, 255))
         screen.blit(round_text, (130,807))    
+        
+        score_display=font3.render(f" {(score)}", False, (255,255,255))
+        screen.blit(score_display, (800,870))
 
 
         if ammo==1:
@@ -539,6 +550,14 @@ while True:
             screen.blit(bullet, bulletrect2)
             bulletrect3 = bullet.get_rect(center=(170, 880))
             screen.blit(bullet, bulletrect3)
+        
+        
+        if score>highscore:
+            with open('highscore.txt','w') as f:
+                f.write(str(score))
+        else:
+            with open('highscore.txt','r') as f:
+                highscore=int(f.read())    
             
             
     else:
@@ -548,7 +567,12 @@ while True:
             menu_theme.play()
             menu_sound_played=True
         
-            
+        if score>highscore:
+            with open('highscore.txt','w') as f:
+                f.write(str(score))
+        else:
+            with open('highscore.txt','r') as f:
+                highscore=int(f.read())
         
         titlescreen1=font1.render('DUCK', False, (0,255,255))
         titlescreen1rect=titlescreen1.get_rect(topleft=(140, 80))
@@ -574,7 +598,7 @@ while True:
         screen.blit(titlescreen4, titlescreen4rect)
         
         
-        titlescreen5=font5.render('High Score', False, (0, 200, 0))
+        titlescreen5 = font5.render(f'High Score:{highscore}', False, (0, 200, 0))
         titlescreen5rect=titlescreen5.get_rect(topleft=(180, 470))
         screen.blit(titlescreen5, titlescreen5rect)
         
