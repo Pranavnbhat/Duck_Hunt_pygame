@@ -243,8 +243,7 @@ class dog(pygame.sprite.Sprite):
                         round_intro=False
                 
         
-        
-        
+
 
     def update(self):
         self.dog_win_animation()
@@ -379,10 +378,7 @@ round_intro_counter=pygame.image.load('assets/bg/round_intro_counter.png')
 round_intro_counter_rect=round_intro_counter.get_rect(center=(512,180))
 
 
-
-
-            
-            
+  
 
 #timer 
 roundtime = pygame.USEREVENT + 2
@@ -397,7 +393,7 @@ while True:
     
 
     mousepos = pygame.mouse.get_pos()
-    print(mousepos)
+    #print(mousepos)
     for event in pygame.event.get():
         if gameactive:  
             crosshairgroup.sprite.firesound(event)
@@ -425,12 +421,7 @@ while True:
             doggroup.draw(screen)
             
                 
-        
-        
-        
-        
-        
-        
+
         
     elif gameactive==True:
         pygame.mouse.set_visible(False)
@@ -451,8 +442,7 @@ while True:
         screen.blit(tree, treerect)
         screen.blit(grass, grassrect)
         
-        
-        
+
         
         crosshairgroup.draw(screen)
         if duckgroup.sprite :
