@@ -8,13 +8,13 @@ from random import choice
 class duck(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        duckdiagonalleft1= pygame.image.load('assets/duck/duckdiagonalleft1.png').convert_alpha()
-        duckdiagonalleft2= pygame.image.load('assets/duck/duckdiagonalleft2.png').convert_alpha()
-        duckdiagonalleft3= pygame.image.load('assets/duck/duckdiagonalleft3.png').convert_alpha()
+        # duckdiagonalleft1= pygame.image.load('assets/duck/duckdiagonalleft1.png').convert_alpha()
+        # duckdiagonalleft2= pygame.image.load('assets/duck/duckdiagonalleft2.png').convert_alpha()
+        # duckdiagonalleft3= pygame.image.load('assets/duck/duckdiagonalleft3.png').convert_alpha()
         
-        duckdiagonalright1= pygame.image.load('assets/duck/duckdiagonalright1.png').convert_alpha()
-        duckdiagonalright2= pygame.image.load('assets/duck/duckdiagonalright2.png').convert_alpha()
-        duckdiagonalright3= pygame.image.load('assets/duck/duckdiagonalright3.png').convert_alpha()
+        # duckdiagonalright1= pygame.image.load('assets/duck/duckdiagonalright1.png').convert_alpha()
+        # duckdiagonalright2= pygame.image.load('assets/duck/duckdiagonalright2.png').convert_alpha()
+        # duckdiagonalright3= pygame.image.load('assets/duck/duckdiagonalright3.png').convert_alpha()
         
         duckleft1= pygame.image.load('assets/duck/duckleft1.png').convert_alpha()
         duckleft2= pygame.image.load('assets/duck/duckleft2.png').convert_alpha()
@@ -28,6 +28,19 @@ class duck(pygame.sprite.Sprite):
         duckfall2= pygame.image.load('assets/duck/fall2.png').convert_alpha()
         duckfall3= pygame.image.load('assets/duck/fall3.png').convert_alpha()
         duckfall4= pygame.image.load('assets/duck/fall4.png').convert_alpha()
+        
+        self.flap=pygame.mixer.Sound('assets/sound/flap.mp3')
+        self.flapy_played=False
+        self.flap.set_volume(0.5)
+        
+        self.fallsound=pygame.mixer.Sound('assets/sound/fallsound.mp3')
+        self.fallsound.set_volume(0.5)
+        self.fallsound_played=False
+        
+        
+        self.thud=pygame.mixer.Sound('assets/sound/thud.mp3')
+        self.thud_played=False
+        
         
         
         
@@ -63,7 +76,16 @@ class duck(pygame.sprite.Sprite):
         self.birdindex =0                                                               
         self.fallindex =0
         self.directionindex=0
-     
+    
+
+
+        self.font7=pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 20)
+        self.score_text = self.font7.render('500', False, (255, 255, 255))   
+
+        self.score_x = -100
+        self.score_y = -100
+        self.score_captured = False
+        
    
     def direction(self):
         if self.vx>0:
@@ -74,19 +96,24 @@ class duck(pygame.sprite.Sprite):
             
     def animation(self):
         if self.directionindex==0:
-            self.birdindex += 0.1
+            self.birdindex += 0.4
             if self.birdindex> len(self.right) :
                 self.birdindex =0 
             self.image=self.right[int(self.birdindex)]
         
         elif self.directionindex==1:
-            self.birdindex += 0.1
+            self.birdindex += 0.4
             if self.birdindex> len(self.left) :
                 self.birdindex =0 
             self.image=self.left[int(self.birdindex)]
             
     def duckmove(self):
         if self.move:
+            if not self.flapy_played:
+                self.flap.play(-1)
+                self.flapy_played=True
+                
+                
             if self.directionindex==0:
                 self.rect.x +=self.vx 
                 self.rect.y +=self.vy
@@ -104,13 +131,32 @@ class duck(pygame.sprite.Sprite):
                     self.vy *= -1  
     
     def duckfall(self,shoot,crosshairindex):
+        global score
         mousepos=pygame.mouse.get_pos()
         if self.move==False or (shoot==True and crosshairindex==1):    #add mousebutton down also here 
             self.move =False
+            self.flap.stop()
+            score+=500
+        
+            if not self.score_captured:
+                self.score_x = self.rect.centerx
+                self.score_y = self.rect.centery
+                self.score_captured = True
+                  
+        
+            if not self.fallsound_played:
+                self.fallsound.play()
+                self.fallsound_played=True
+                
+                
             self.image=self.fall[int(self.fallindex)]
             self.fallindex +=0.1
             if self.fallindex> len(self.fall):  self.fallindex=0 
-            duck_x = self.rect.centerx 
+            duck_x = self.rect.centerx
+            
+            
+            screen.blit(self.score_text, (self.score_x,self.score_y))  
+            
             if 0<duck_x<200:  duck_x=325
             elif 750<duck_x<910:  duck_x=660
             
@@ -120,7 +166,10 @@ class duck(pygame.sprite.Sprite):
                              #this is for the dog 
                 
             else:
-                 
+                self.fallsound.stop() 
+                if self.thud_played==False:
+                    self.thud.play()
+                    self.thud_played=True
                 self.kill()
                 doggroup.add(dog(duck_x))
                 
@@ -203,6 +252,7 @@ class dog(pygame.sprite.Sprite):
                     gameround+=1
                     ammo =3
     def dog_intro(self):
+        global ammo
         global round_intro
         if round_intro==True:
             if self.rect.x< 500 :
@@ -232,7 +282,7 @@ class dog(pygame.sprite.Sprite):
                 
                 
                 
-                if self.rect.centery>=560 and self.down==False:
+                if self.rect.centery>=560 and self.down==False and self.dogindex>5.8:
                     self.rect.y-=3
                     if self.rect.centery<560:
                         self.down=True
@@ -240,6 +290,7 @@ class dog(pygame.sprite.Sprite):
                     self.rect.y +=3.5
                     if self.rect.top >= 790:
                         self.kill()
+                        ammo=3
                         round_intro=False
                 
         
@@ -307,6 +358,7 @@ class crosshair(pygame.sprite.Sprite):
      
     def collision(self,birdrect):
         collide=self.rect.colliderect(birdrect)                #when ever you call this function outside now remebe to call it as self.collision(duckgroup.sprite.rect)
+        
         return collide                                         
         
 
@@ -327,6 +379,12 @@ ammo =3
 duckcount=0
 round_intro=False
 
+
+
+menu_theme=pygame.mixer.Sound('assets/sound/menu_theme.mp3')
+round_intro_theme=pygame.mixer.Sound('assets/sound/round_intro_theme.mp3')
+menu_sound_played = False
+round_intro_sound_played = False
 
 
 
@@ -385,6 +443,14 @@ roundtime = pygame.USEREVENT + 2
 pygame.time.set_timer(roundtime,5000)
 
 
+
+#score and highscore text file creation 
+score=0
+with open('highscore.txt' ,'r') as f:
+    highscore=int(f.read())
+    
+
+
 while True:
     screen.fill((66, 192, 255))
     screen.blit(cloud2, cloud2rect)
@@ -405,6 +471,10 @@ while True:
      
 
     if round_intro==True and gameactive==True:
+        if not round_intro_sound_played:
+            round_intro_theme.play()
+            round_intro_sound_played=True
+        
         screen.blit(round_intro_counter, round_intro_counter_rect)
         round_text=font6.render(f" {(gameround//10)+1}", False, (255, 255, 255))
         screen.blit(round_text, (480,190))
@@ -474,6 +544,12 @@ while True:
     else:
         screen.fill((0,0,0))
         
+        if not menu_sound_played:
+            menu_theme.play()
+            menu_sound_played=True
+        
+            
+        
         titlescreen1=font1.render('DUCK', False, (0,255,255))
         titlescreen1rect=titlescreen1.get_rect(topleft=(140, 80))
         screen.blit(titlescreen1, titlescreen1rect)
@@ -505,6 +581,7 @@ while True:
         
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen3rect.collidepoint(mousepos):
             gameactive=True
+            menu_theme.stop()
             round_intro=True
             doggroup.add(dog(0))           
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen4rect.collidepoint(mousepos):
