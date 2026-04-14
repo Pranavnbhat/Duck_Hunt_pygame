@@ -29,7 +29,7 @@ class duck(pygame.sprite.Sprite):
         self.flap.set_volume(0.35)
         
         self.fallsound=pygame.mixer.Sound('assets/sound/fallsound.mp3')
-        self.fallsound.set_volume(0.5)
+        
         self.fallsound_played=False
         
         
@@ -234,6 +234,12 @@ class dog(pygame.sprite.Sprite):
         self.doglist=[dog1, dog2, dog3, dog4, dog5, dog6, dog7, dog8]
         self.dogindex=0
         
+        self.dog_laugh_sound=pygame.mixer.Sound('assets/sound/laugh_sound.mp3')
+        self.laugh_played=False
+        
+        self.win_sound=pygame.mixer.Sound('assets/sound/win_sound.mp3')
+        self.win_sound_played=False
+        
         
         
         
@@ -262,7 +268,9 @@ class dog(pygame.sprite.Sprite):
                     self.kill()
                     gameround+=1
                     ammo =3
-                    
+            if not self.win_sound_played:
+                self.win_sound_played=True
+                self.win_sound.play()
                     
     def dog_laugh_animation(self):
         global duck_missed
@@ -289,7 +297,11 @@ class dog(pygame.sprite.Sprite):
                     ammo =3
                     duckgroup.sprite.flap.stop()
                     duckgroup.sprite.kill()
-                    
+            
+            if self.laugh_played==False:
+                self.laugh_played=True
+                self.dog_laugh_sound.play()
+                
         
   
 
@@ -463,8 +475,8 @@ doggroup=pygame.sprite.GroupSingle()
 
 
 
-screen.fill((66, 192, 255))
-            
+
+screen.fill((66, 192, 255))            
 tree=pygame.image.load('assets/bg/tree.png').convert_alpha()
 treerect=tree.get_rect(midbottom=(121, 963))
             
@@ -567,7 +579,8 @@ while True:
         if ammo<=0 and duckgroup.sprite and duckgroup.sprite.move and len(doggroup)==0: 
             duck_missed=True
             doggroup.add(dog(512))
-        if duck_missed==True:   
+        if duck_missed==True: 
+            screen.fill((227,163,150))
             screen.blit(fly_away_card, fly_away_card_rect)  
             duckgroup.sprite.flap.stop()
         
