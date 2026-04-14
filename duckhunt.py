@@ -25,7 +25,8 @@ class duck(pygame.sprite.Sprite):
         
         self.flap=pygame.mixer.Sound('assets/sound/flap.mp3')
         self.flapy_played=False
-        self.flap.set_volume(0.5)
+        
+        self.flap.set_volume(0.35)
         
         self.fallsound=pygame.mixer.Sound('assets/sound/fallsound.mp3')
         self.fallsound.set_volume(0.5)
@@ -102,9 +103,10 @@ class duck(pygame.sprite.Sprite):
             self.image=self.left[int(self.birdindex)]
             
     def duckmove(self):
+        global duck_missed
         if self.move:
             if not self.flapy_played and not round_intro:
-                self.flap.play(-1)
+                self.flap.play(-1)       
                 self.flapy_played=True
                 
                 
@@ -114,7 +116,7 @@ class duck(pygame.sprite.Sprite):
                 if self.rect.right >= 1024 or self.rect.left <= 0:
                     self.vx *= -1
                 elif self.rect.top <= 0 or self.rect.bottom >= 765:
-                    self.vy *= -1
+                    if not duck_missed: self.vy *= -1
                     
             elif self.directionindex==1:
                 self.rect.x +=self.vx   
@@ -122,7 +124,11 @@ class duck(pygame.sprite.Sprite):
                 if self.rect.left <=0 or self.rect.right >=1024: 
                     self.vx *= -1
                 elif self.rect.top <= 0 or self.rect.bottom >= 765:
-                    self.vy *= -1  
+                    if not duck_missed: self.vy *= -1  
+                    
+            if duck_missed==True:
+                self.rect.y -=7
+                
     
     def duckfall(self,shoot,crosshairindex):
         global score
@@ -281,6 +287,9 @@ class dog(pygame.sprite.Sprite):
                     self.kill()
                     gameround+=1
                     ammo =3
+                    duckgroup.sprite.flap.stop()
+                    duckgroup.sprite.kill()
+                    
         
   
 
@@ -481,6 +490,11 @@ round_intro_counter=pygame.image.load('assets/bg/round_intro_counter.png').conve
 round_intro_counter_rect=round_intro_counter.get_rect(center=(512,180))
 
 
+fly_away_card=pygame.image.load('assets/bg/fly_away_screen.png').convert_alpha()
+fly_away_card_rect=fly_away_card.get_rect(center=(512,180))
+
+
+
   
 
 #timer 
@@ -553,6 +567,10 @@ while True:
         if ammo<=0 and duckgroup.sprite and duckgroup.sprite.move and len(doggroup)==0: 
             duck_missed=True
             doggroup.add(dog(512))
+        if duck_missed==True:   
+            screen.blit(fly_away_card, fly_away_card_rect)  
+            duckgroup.sprite.flap.stop()
+        
             
         
             
