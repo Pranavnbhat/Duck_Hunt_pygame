@@ -8,13 +8,7 @@ from random import choice
 class duck(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        # duckdiagonalleft1= pygame.image.load('assets/duck/duckdiagonalleft1.png').convert_alpha()
-        # duckdiagonalleft2= pygame.image.load('assets/duck/duckdiagonalleft2.png').convert_alpha()
-        # duckdiagonalleft3= pygame.image.load('assets/duck/duckdiagonalleft3.png').convert_alpha()
         
-        # duckdiagonalright1= pygame.image.load('assets/duck/duckdiagonalright1.png').convert_alpha()
-        # duckdiagonalright2= pygame.image.load('assets/duck/duckdiagonalright2.png').convert_alpha()
-        # duckdiagonalright3= pygame.image.load('assets/duck/duckdiagonalright3.png').convert_alpha()
         
         duckleft1= pygame.image.load('assets/duck/duckleft1.png').convert_alpha()
         duckleft2= pygame.image.load('assets/duck/duckleft2.png').convert_alpha()
@@ -96,13 +90,13 @@ class duck(pygame.sprite.Sprite):
             
     def animation(self):
         if self.directionindex==0:
-            self.birdindex += 0.4
+            self.birdindex += 0.3
             if self.birdindex> len(self.right) :
                 self.birdindex =0 
             self.image=self.right[int(self.birdindex)]
         
         elif self.directionindex==1:
-            self.birdindex += 0.4
+            self.birdindex += 0.3
             if self.birdindex> len(self.left) :
                 self.birdindex =0 
             self.image=self.left[int(self.birdindex)]
@@ -200,14 +194,14 @@ class dog(pygame.sprite.Sprite):
         global gameactive
         global round_intro
         
-        dog1 = pygame.image.load('assets/dog/dog1.png')
-        dog2 = pygame.image.load('assets/dog/dog2.png')
-        dog3 = pygame.image.load('assets/dog/dog3.png')
-        dog4 = pygame.image.load('assets/dog/dog4.png')
-        dog5 = pygame.image.load('assets/dog/dog5.png')
-        dog6 = pygame.image.load('assets/dog/dog6.png')
-        dog7 = pygame.image.load('assets/dog/dog7.png')
-        dog8 = pygame.image.load('assets/dog/dog8.png')
+        dog1 = pygame.image.load('assets/dog/dog1.png').convert_alpha()
+        dog2 = pygame.image.load('assets/dog/dog2.png').convert_alpha()
+        dog3 = pygame.image.load('assets/dog/dog3.png').convert_alpha()
+        dog4 = pygame.image.load('assets/dog/dog4.png').convert_alpha()
+        dog5 = pygame.image.load('assets/dog/dog5.png').convert_alpha()
+        dog6 = pygame.image.load('assets/dog/dog6.png').convert_alpha()
+        dog7 = pygame.image.load('assets/dog/dog7.png').convert_alpha()
+        dog8 = pygame.image.load('assets/dog/dog8.png').convert_alpha()
         
         dog1 = pygame.transform.scale(dog1, (150, 150))
         dog2 = pygame.transform.scale(dog2, (150, 150))
@@ -217,6 +211,16 @@ class dog(pygame.sprite.Sprite):
         dog6 = pygame.transform.scale(dog6, (150, 150))
         dog7 = pygame.transform.scale(dog7, (150, 150))
         dog8 = pygame.transform.scale(dog8, (150, 150))
+        
+        
+        doglaugh1=pygame.image.load('assets/dog/doglaugh1.png').convert_alpha()
+        doglaugh2=pygame.image.load('assets/dog/doglaugh2.png').convert_alpha()
+        
+        doglaugh1 = pygame.transform.scale(doglaugh1, (100, 150))
+        doglaugh2 = pygame.transform.scale(doglaugh2, (100, 150))
+        
+        self.dog_laugh_list=[doglaugh1,doglaugh2]
+        self.dog_laugh_index=0
         
         
         
@@ -252,6 +256,34 @@ class dog(pygame.sprite.Sprite):
                     self.kill()
                     gameround+=1
                     ammo =3
+                    
+                    
+    def dog_laugh_animation(self):
+        global duck_missed
+        global ammo
+        global gameround
+        
+        if duck_missed and  duckgroup.sprite.move:
+            
+            
+            self.dog_laugh_index+=0.2
+            if self.dog_laugh_index >= len(self.dog_laugh_list):    self.dog_laugh_index = 0
+            self.image=self.dog_laugh_list[int(self.dog_laugh_index)]
+            
+            if self.rect.top <= 780 and self.down==False:
+                self.rect.y-=3
+                if self.rect.top==550:
+                    self.down=True
+            elif self.down==True:
+                self.rect.y +=3
+                if self.rect.top >= 790:
+                    duck_missed=False
+                    self.kill()
+                    gameround+=1
+                    ammo =3
+        
+  
+
     def dog_intro(self):
         global ammo
         global round_intro
@@ -301,8 +333,12 @@ class dog(pygame.sprite.Sprite):
 
 
     def update(self):
-        self.dog_win_animation()
-        self.dog_intro()
+        if duck_missed:
+            self.dog_laugh_animation()
+        elif round_intro:
+            self.dog_intro()
+        else:
+            self.dog_win_animation()
         
         
 
@@ -341,7 +377,7 @@ class crosshair(pygame.sprite.Sprite):
             
         if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False and len(duckgroup)!=0:
             self.reload=True
-            self.fire_sound.play()
+            if not self.crosshairindex==2:  self.fire_sound.play()
             ammo -=1
             self.shoot = True
                
@@ -377,11 +413,16 @@ screen = pygame.display.set_mode((1024,960))
 pygame.display.set_caption('Duck Hunt')
 clock = pygame.time.Clock()
 font = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 50)  
+
 gameactive= False
 gameround=0
+round_intro=False
+duck_missed=False
+
 ammo =3 
 duckcount=0
-round_intro=False
+
+
 
 
 
@@ -415,28 +456,28 @@ doggroup=pygame.sprite.GroupSingle()
 
 screen.fill((66, 192, 255))
             
-tree=pygame.image.load('assets/bg/tree.png')
+tree=pygame.image.load('assets/bg/tree.png').convert_alpha()
 treerect=tree.get_rect(midbottom=(121, 963))
             
 
 
-grass = pygame.image.load('assets/bg/grass.png')
+grass = pygame.image.load('assets/bg/grass.png').convert_alpha()
 grassrect = grass.get_rect(bottomleft=(0, 1316))       #it's 1316 casue the image has some extra transparent parts so i had to find this manually 
 
 
 
-cloud2 = pygame.image.load('assets/bg/cloud2.png')
+cloud2 = pygame.image.load('assets/bg/cloud2.png').convert_alpha()
 cloud2rect = cloud2.get_rect(topleft=(80, 40))
 
-cloud3 = pygame.image.load('assets/bg/cloud3.png')
+cloud3 = pygame.image.load('assets/bg/cloud3.png').convert_alpha()
 cloud3rect = cloud3.get_rect(topleft=(480, 25))
 
-cloud1 = pygame.image.load('assets/bg/cloud1.png')
+cloud1 = pygame.image.load('assets/bg/cloud1.png').convert_alpha()
 cloud1rect = cloud1.get_rect(topleft=(660, 60))
 
-bullet=pygame.image.load('assets/bg/bullet.png')
+bullet=pygame.image.load('assets/bg/bullet.png').convert_alpha()
 
-round_intro_counter=pygame.image.load('assets/bg/round_intro_counter.png')
+round_intro_counter=pygame.image.load('assets/bg/round_intro_counter.png').convert_alpha()
 round_intro_counter_rect=round_intro_counter.get_rect(center=(512,180))
 
 
@@ -502,12 +543,18 @@ while True:
         pygame.mouse.set_visible(False)
         
         if len(duckgroup)==0 and len(doggroup)==0: 
-            duckgroup.add(duck())            #x here will be the time dog takes to finish its animation after the duck hits the floor 
+            duckgroup.add(duck())            
             duckcount+=1
             if duckcount%10 ==0 and duckcount!=0:
                 round_intro=True
                 
-                doggroup.add(dog(0))           
+                doggroup.add(dog(0))
+            
+        if ammo<=0 and duckgroup.sprite and duckgroup.sprite.move and len(doggroup)==0: 
+            duck_missed=True
+            doggroup.add(dog(512))
+            
+        
             
         duckgroup.draw(screen)
         duckgroup.update(crosshairgroup.sprite.shoot, crosshairgroup.sprite.crosshairindex)
