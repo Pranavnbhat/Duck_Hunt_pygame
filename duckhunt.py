@@ -136,6 +136,7 @@ class duck(pygame.sprite.Sprite):
         if self.move==False or (shoot==True and crosshairindex==1):    #add mousebutton down also here 
             self.move =False
             self.flap.stop()
+            pygame.time.set_timer(roundtime, 0)
             
         
             if not self.score_captured:
@@ -271,7 +272,8 @@ class dog(pygame.sprite.Sprite):
             if not self.win_sound_played:
                 self.win_sound_played=True
                 self.win_sound.play()
-                    
+            pygame.time.set_timer(roundtime, 0)  
+            
     def dog_laugh_animation(self):
         global duck_missed
         global ammo
@@ -301,7 +303,8 @@ class dog(pygame.sprite.Sprite):
             if self.laugh_played==False:
                 self.laugh_played=True
                 self.dog_laugh_sound.play()
-                
+            
+            pygame.time.set_timer(roundtime, 0)
         
   
 
@@ -511,7 +514,8 @@ fly_away_card_rect=fly_away_card.get_rect(center=(512,180))
 
 #timer 
 roundtime = pygame.USEREVENT + 2
-pygame.time.set_timer(roundtime,5000)
+timer_started=False
+
 
 
 
@@ -538,7 +542,11 @@ while True:
         if event.type==pygame.QUIT:
             pygame.quit()
             exit()
-            
+        if event.type==roundtime:
+            if duckgroup.sprite and duckgroup.sprite.move and len(doggroup)==0:
+                duck_missed = True
+                doggroup.add(dog(512))
+                timer_started=False
      
 
     if round_intro==True and gameactive==True:
@@ -566,10 +574,14 @@ while True:
 
         
     elif gameactive==True:
+        if not timer_started:
+            pygame.time.set_timer(roundtime, 5000, 1)
+            timer_started=True
         pygame.mouse.set_visible(False)
         
         if len(duckgroup)==0 and len(doggroup)==0: 
-            duckgroup.add(duck())            
+            duckgroup.add(duck())   
+            timer_started=False
             duckcount+=1
             if duckcount%10 ==0 and duckcount!=0:
                 round_intro=True
