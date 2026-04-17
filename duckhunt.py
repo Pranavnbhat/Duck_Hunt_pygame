@@ -104,7 +104,7 @@ class duck(pygame.sprite.Sprite):
             
     def duckmove(self):
         global duck_missed
-        if self.move:
+        if self.move and not game_over_screen:
             if not self.flapy_played and not round_intro:
                 self.flap.play(-1)       
                 self.flapy_played=True
@@ -126,7 +126,7 @@ class duck(pygame.sprite.Sprite):
                 elif self.rect.top <= 0 or self.rect.bottom >= 765:
                     if not duck_missed: self.vy *= -1  
                     
-            if duck_missed==True:
+            if duck_missed==True :
                 self.vy=0
                 self.rect.y -=8
                 
@@ -741,10 +741,21 @@ while True:
         
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen3rect.collidepoint(mousepos):
             gameactive=True
+            duckgroup.add(duck())
+            
             menu_theme.stop()
             menu_sound_played=False
+            
             round_intro=True
-            doggroup.add(dog(0))           
+            
+            doggroup.add(dog(0))
+            
+            game_over_screen=False
+            duck_missed=False
+            duck_missed_counter=0
+            gameround=0
+            score=0
+            
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen4rect.collidepoint(mousepos):
             pygame.quit()
             exit()
