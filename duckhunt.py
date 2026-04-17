@@ -697,6 +697,7 @@ while True:
             
     else:
         screen.fill((0,0,0))
+        pygame.mouse.set_visible(True)
         
         if not menu_sound_played:
             menu_theme.play()
@@ -741,6 +742,7 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen3rect.collidepoint(mousepos):
             gameactive=True
             menu_theme.stop()
+            menu_sound_played=False
             round_intro=True
             doggroup.add(dog(0))           
         if event.type == pygame.MOUSEBUTTONDOWN and titlescreen4rect.collidepoint(mousepos):
@@ -751,7 +753,7 @@ while True:
     fps_text = font6.render(f"FPS: {int(clock.get_fps())}", False, (255, 255, 255))
     screen.blit(fps_text, (10, 10))
     #print(ammo)
-    print(duck_missed_counter)
+    #print(duck_missed_counter)
     
     pygame.display.update()
     clock.tick(60)    
