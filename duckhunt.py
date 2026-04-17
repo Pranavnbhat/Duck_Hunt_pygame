@@ -53,7 +53,7 @@ class duck(pygame.sprite.Sprite):
         global gameround
         
         if 0<=gameround<=19:
-            speed=3
+            speed=4
         elif 20<=gameround<=49:
             speed=6
         elif 50<=gameround<=79:
@@ -127,7 +127,9 @@ class duck(pygame.sprite.Sprite):
                     if not duck_missed: self.vy *= -1  
                     
             if duck_missed==True:
-                self.rect.y -=7
+                self.vy=0
+                self.rect.y -=8
+                
                 
     
     def duckfall(self,shoot,crosshairindex):
@@ -238,6 +240,9 @@ class dog(pygame.sprite.Sprite):
         self.dog_laugh_sound=pygame.mixer.Sound('assets/sound/laugh_sound.mp3')
         self.laugh_played=False
         
+        self.game_over_sound=pygame.mixer.Sound('assets/sound/gameover.mp3')
+        
+        
         self.win_sound=pygame.mixer.Sound('assets/sound/win_sound.mp3')
         self.win_sound_played=False
         
@@ -278,6 +283,7 @@ class dog(pygame.sprite.Sprite):
         global duck_missed
         global ammo
         global gameround
+        global gameactive
         
         if duck_missed and  duckgroup.sprite.move:
             
@@ -287,11 +293,13 @@ class dog(pygame.sprite.Sprite):
             self.image=self.dog_laugh_list[int(self.dog_laugh_index)]
             
             if self.rect.top <= 780 and self.down==False:
-                self.rect.y-=3
+                if not game_over_screen:    self.rect.y-=3
+                elif game_over_screen:  self.rect.y-=2
                 if self.rect.top==550:
                     self.down=True
             elif self.down==True:
-                self.rect.y +=3
+                if not game_over_screen:    self.rect.y +=3
+                elif game_over_screen:  self.rect.y+=2
                 if self.rect.top >= 790:
                     duck_missed=False
                     self.kill()
@@ -299,10 +307,12 @@ class dog(pygame.sprite.Sprite):
                     ammo =3
                     duckgroup.sprite.flap.stop()
                     duckgroup.sprite.kill()
+                    if game_over_screen:    gameactive=False
             
             if self.laugh_played==False:
                 self.laugh_played=True
                 self.dog_laugh_sound.play()
+                if game_over_screen:    self.game_over_sound.play()
             
             pygame.time.set_timer(roundtime, 0)
         
@@ -397,11 +407,11 @@ class crosshair(pygame.sprite.Sprite):
         if self.reload ==True :
             self.reload= False
             self.shoot=False
-            self.relaod_sound.play()
+            if not round_intro: self.relaod_sound.play()
             
         if event.type == pygame.MOUSEBUTTONDOWN and self.reload==False and len(duckgroup)!=0:
             self.reload=True
-            if not self.crosshairindex==2:  self.fire_sound.play()
+            if not self.crosshairindex==2 and not round_intro:  self.fire_sound.play()
             ammo -=1
             self.shoot = True
                
@@ -421,9 +431,11 @@ class crosshair(pygame.sprite.Sprite):
         self.rect=self.image.get_rect(center=mousepos)
      
     def collision(self,birdrect):
-        collide=self.rect.colliderect(birdrect)                #when ever you call this function outside now remebe to call it as self.collision(duckgroup.sprite.rect)
+        if not duck_missed:
         
-        return collide                                         
+            collide=self.rect.colliderect(birdrect)                #when ever you call this function outside now remebe to call it as self.collision(duckgroup.sprite.rect)
+            return collide  
+                                               
         
 
     def update(self,birdrect):
@@ -442,7 +454,8 @@ gameactive= False
 gameround=0
 round_intro=False
 duck_missed=False
-
+duck_missed_counter=0
+game_over_screen=False
 ammo =3 
 duckcount=0
 
@@ -508,6 +521,10 @@ round_intro_counter_rect=round_intro_counter.get_rect(center=(512,180))
 fly_away_card=pygame.image.load('assets/bg/fly_away_screen.png').convert_alpha()
 fly_away_card_rect=fly_away_card.get_rect(center=(512,180))
 
+game_over_card = pygame.image.load('assets/bg/game_over_card.png').convert_alpha()
+game_over_card_rect = game_over_card.get_rect(center=(512, 180))
+
+
 
 
   
@@ -545,30 +562,55 @@ while True:
         if event.type==roundtime:
             if duckgroup.sprite and duckgroup.sprite.move and len(doggroup)==0:
                 duck_missed = True
+                duck_missed_counter+=1
                 doggroup.add(dog(512))
                 timer_started=False
+                
      
 
     if round_intro==True and gameactive==True:
-        if not round_intro_sound_played:
-            round_intro_theme.play()
-            round_intro_sound_played=True
-        
-        screen.blit(round_intro_counter, round_intro_counter_rect)
-        round_text=font6.render(f" {(gameround//10)+1}", False, (255, 255, 255))
-        
-        screen.blit(round_text, (480,190))
-        
-        if doggroup.sprite.dogindex>=7:
-            doggroup.update()
-            doggroup.draw(screen)    
-            screen.blit(tree, treerect)
-            screen.blit(grass, grassrect)
+        pygame.mouse.set_visible(False)
+        if duck_missed_counter>=3 and 0<=gameround<=19:
+            duck_missed=True
+            round_intro=False
+            doggroup.add(dog(512))
+            game_over_screen=True
+            
+            
+            
+        elif duck_missed_counter>=2 and 20<=gameround<=49:
+            duck_missed=True
+            round_intro=False
+            doggroup.add(dog(512))
+            game_over_screen=True
+            
+        elif duck_missed_counter>=3 and 50<=gameround:
+            duck_missed=True
+            round_intro=False
+            doggroup.add(dog(512))
+            game_over_screen=True
+            
         else:
-            screen.blit(tree, treerect)
-            screen.blit(grass, grassrect)
-            doggroup.update()
-            doggroup.draw(screen)
+            duck_missed_counter=0
+            if not round_intro_sound_played:
+                round_intro_theme.play()
+                round_intro_sound_played=True
+            
+            screen.blit(round_intro_counter, round_intro_counter_rect)
+            round_text=font6.render(f" {(gameround//10)+1}", False, (255, 255, 255))
+            
+            screen.blit(round_text, (480,190))
+            
+            if doggroup.sprite.dogindex>=7:
+                doggroup.update()
+                doggroup.draw(screen)    
+                screen.blit(tree, treerect)
+                screen.blit(grass, grassrect)
+            else:
+                screen.blit(tree, treerect)
+                screen.blit(grass, grassrect)
+                doggroup.update()
+                doggroup.draw(screen)
             
                 
 
@@ -586,15 +628,17 @@ while True:
             if duckcount%10 ==0 and duckcount!=0:
                 round_intro=True
                 
+                
                 doggroup.add(dog(0))
             
-        if ammo<=0 and duckgroup.sprite and duckgroup.sprite.move and len(doggroup)==0: 
+        if ammo<=0 and duckgroup.sprite and duckgroup.sprite.move and len(doggroup)==0 and not crosshairgroup.sprite.shoot: 
             duck_missed=True
+            duck_missed_counter+=1
             doggroup.add(dog(512))
         if duck_missed==True: 
-            screen.fill((227,163,150))
-            screen.blit(fly_away_card, fly_away_card_rect)  
-            duckgroup.sprite.flap.stop()
+            if not game_over_screen:    screen.fill((227,163,150))
+            
+            if duckgroup:   duckgroup.sprite.flap.stop()
         
             
         
@@ -609,7 +653,8 @@ while True:
         screen.blit(grass, grassrect)
         
         if duckgroup.sprite:   screen.blit(duckgroup.sprite.score_text, (duckgroup.sprite.score_x,duckgroup.sprite.score_y)) 
-        
+        if duck_missed and not game_over_screen: screen.blit(fly_away_card, fly_away_card_rect)  
+        elif duck_missed and game_over_screen:  screen.blit(game_over_card, game_over_card_rect)
 
         
         crosshairgroup.draw(screen)
@@ -706,6 +751,7 @@ while True:
     fps_text = font6.render(f"FPS: {int(clock.get_fps())}", False, (255, 255, 255))
     screen.blit(fps_text, (10, 10))
     #print(ammo)
+    print(duck_missed_counter)
     
     pygame.display.update()
     clock.tick(60)    
