@@ -65,7 +65,7 @@ class duck(pygame.sprite.Sprite):
         self.vy = choice([(-1*speed)-1, -1*speed, speed, speed+1])
         
         self.image = self.right[1]
-        self.rect = self.image.get_rect(midbottom=(randint(100, 700), 760))
+        self.rect = self.image.get_rect(midbottom=(randint(100, 700), 770))
         
    
         self.birdindex =0                                                               
@@ -115,7 +115,7 @@ class duck(pygame.sprite.Sprite):
                 self.rect.y +=self.vy
                 if self.rect.right >= 1024 or self.rect.left <= 0:
                     self.vx *= -1
-                elif self.rect.top <= 0 or self.rect.bottom >= 765:
+                elif self.rect.top <= 0 or self.rect.bottom >= 775:
                     if not duck_missed: self.vy *= -1
                     
             elif self.directionindex==1:
@@ -123,7 +123,7 @@ class duck(pygame.sprite.Sprite):
                 self.rect.y +=self.vy
                 if self.rect.left <=0 or self.rect.right >=1024: 
                     self.vx *= -1
-                elif self.rect.top <= 0 or self.rect.bottom >= 765:
+                elif self.rect.top <= 0 or self.rect.bottom >= 775:
                     if not duck_missed: self.vy *= -1  
                     
             if duck_missed==True :
