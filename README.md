@@ -34,9 +34,15 @@ Shooting-Left mouse button
 4.Open the location of duckhunt.py with terminal and run it with command "python duckhunt.py "
 
 ## Project Structure
-duckhunt.py        # Main game loop  
-assets/            # Images, sounds, fonts  
-highscore.txt      # Stores high score  
+duckhunt.py
+assets/
+duck/
+dog/
+crosshair/
+bg/
+sound/
+fonts/
+highscore.txt
 
 ## What I Learned
 
