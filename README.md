@@ -3,7 +3,7 @@ Learning project to recreate/remaster Nintendo's NES game Duck Hunt on python wi
 This is my first ever project 
 
 ## Preview
-
+![Gameplay](assets/preview.gif)
 
 ## Features
 - Main menu with "Start" and "Exit" and options highlight 
