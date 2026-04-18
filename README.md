@@ -2,7 +2,7 @@
 Learning project to recreate/remaster Nintendo's NES game Duck Hunt on python with pygame module.
 This is my first ever project 
 
-##Preview
+## Preview
 
 
 ## Features
@@ -28,21 +28,23 @@ Shooting-Left mouse button
 3. Run the exe
 
 (Method 2)
-1.Install python latest version from https://www.python.org/
-2.Install pygame with "pip install pygame" command in terminal 
-3.Download the code from main brach 
-4.Open the location of duckhunt.py with terminal and run it with command "python duckhunt.py "
+1. Install python latest version from https://www.python.org/
+2. Install pygame with "pip install pygame" command in terminal 
+3. Download the code from main brach 
+4. Open the location of duckhunt.py with terminal and run it with command "python duckhunt.py "
 
 ## Project Structure
+```
 duckhunt.py
 assets/
-duck/
-dog/
-crosshair/
-bg/
-sound/
-fonts/
+    duck/
+    dog/
+    crosshair/
+    bg/
+    sound/
+    fonts/
 highscore.txt
+```
 
 ## What I Learned
 
