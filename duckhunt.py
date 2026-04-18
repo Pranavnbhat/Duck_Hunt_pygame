@@ -389,6 +389,7 @@ class crosshair(pygame.sprite.Sprite):
         
         self.fire_sound = pygame.mixer.Sound('assets/sound/fire.mp3')
         self.relaod_sound=pygame.mixer.Sound('assets/sound/reload.mp3')
+        self.relaod_sound.set_volume(0)                            #mute the reloa sound for now 
         self.shoot=False # this wil be true only the frame the gun fires 
        
         self.crosshairindex=0
@@ -458,6 +459,7 @@ duck_missed_counter=0
 game_over_screen=False
 ammo =3 
 duckcount=0
+duck_left=10
 
 
 
@@ -524,6 +526,8 @@ fly_away_card_rect=fly_away_card.get_rect(center=(512,180))
 game_over_card = pygame.image.load('assets/bg/game_over_card.png').convert_alpha()
 game_over_card_rect = game_over_card.get_rect(center=(512, 180))
 
+
+duck_left_image=pygame.image.load('assets/bg/duck_left.png').convert_alpha()
 
 
 
@@ -592,6 +596,7 @@ while True:
             
         else:
             duck_missed_counter=0
+            duck_left=10
             if not round_intro_sound_played:
                 round_intro_theme.play()
                 round_intro_sound_played=True
@@ -622,7 +627,8 @@ while True:
         pygame.mouse.set_visible(False)
         
         if len(duckgroup)==0 and len(doggroup)==0: 
-            duckgroup.add(duck())   
+            duckgroup.add(duck()) 
+            duck_left=duck_left-1
             timer_started=False
             duckcount+=1
             if duckcount%10 ==0 and duckcount!=0:
@@ -685,6 +691,48 @@ while True:
             screen.blit(bullet, bulletrect2)
             bulletrect3 = bullet.get_rect(center=(170, 880))
             screen.blit(bullet, bulletrect3)
+            
+            
+        if duck_left == 10:
+            duck_left_rect = duck_left_image.get_rect(center=(666, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 9:
+            duck_left_rect = duck_left_image.get_rect(center=(636, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 8:
+            duck_left_rect = duck_left_image.get_rect(center=(606, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 7:
+            duck_left_rect = duck_left_image.get_rect(center=(576, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 6:
+            duck_left_rect = duck_left_image.get_rect(center=(546, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 5:
+            duck_left_rect = duck_left_image.get_rect(center=(516, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 4:
+            duck_left_rect = duck_left_image.get_rect(center=(486, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 3:
+            duck_left_rect = duck_left_image.get_rect(center=(456, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 2:
+            duck_left_rect = duck_left_image.get_rect(center=(426, 875))
+            screen.blit(duck_left_image, duck_left_rect)
+
+        if duck_left >= 1:
+            duck_left_rect = duck_left_image.get_rect(center=(396, 875))
+            screen.blit(duck_left_image, duck_left_rect)    
+            
         
         
         if score>highscore:
@@ -765,6 +813,7 @@ while True:
     screen.blit(fps_text, (10, 10))
     #print(ammo)
     #print(duck_missed_counter)
+    #print(duck_left)
     
     pygame.display.update()
     clock.tick(60)    
