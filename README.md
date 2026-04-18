@@ -3,7 +3,7 @@ Learning project to recreate/remaster Nintendo's NES game Duck Hunt on python wi
 This is my first ever project 
 
 ## Preview
-![Gameplay](assets/preview.gif)
+![Gameplay gif](assets/preview.gif)
 
 ## Features
 - Main menu with "Start" and "Exit" and options highlight 
@@ -30,7 +30,7 @@ Shooting-Left mouse button
 (Method 2)
 1. Install python latest version from https://www.python.org/
 2. Install pygame with "pip install pygame" command in terminal 
-3. Download the code from main brach 
+3. Download the code from main branch 
 4. Open the location of duckhunt.py with terminal and run it with command "python duckhunt.py "
 
 ## Project Structure
@@ -46,7 +46,7 @@ assets/
 highscore.txt
 ```
 
-## What I Learned
+## Technical Highlights
 
 - Game loop and event handling in pygame
 - Sprite management and animation
@@ -58,4 +58,6 @@ highscore.txt
 - Sound and Music systems 
 - Debugging performance issues 
 
-
+## Notes 
+- Change the number in highscore.txt to 0 make your highscore 0
+- Change Settings > System > Display > Scale and Layout > Scale > 100% for a intended experience 
